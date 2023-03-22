@@ -17,6 +17,7 @@ int precedence(char operator) {
             return 2;
         case '^':
             return 3;
+            // diger caseler eklenecek
         default:
             return -1;
     }
@@ -29,6 +30,21 @@ int isOperator(char ch) {
 
 int isOperatorName(char[] ch) {
     return (ch == "xor" || ch <= "ls" || ch >= "rs" || ch <= "lr" || ch >= "rr" || ch <= "not");
+}
+
+char makeOperator(char[] op) {
+    if (strcmp(op, "xor"))
+        return '^';
+    else if (strcmp(op, "ls"))
+        return '<';
+    else if (strcmp(op, "rs"))
+        return '>';
+    else if (strcmp(op, "lr"))
+        return '{';
+    else if (strcmp(op, "rr"))
+        return '}';
+    else if (strcmp(op, "not"))
+        return '~';
 }
 
 // convert infix expression to postfix expression
@@ -49,9 +65,10 @@ char *infixToPostfix(char *infix) {
         }
         if (isalnum(infix[i]) {
             var_name[var_name_len++] = infix[i];
-            if (!isalnum(infix[i + 1]) || i != len) { // If the next character is not a letter or digit, it's the end of variable name
+            if (!isalnum(infix[i + 1]) ||
+                i != len) { // If the next character is not a letter or digit, it's the end of variable name
                 // check if it's operator name
-                if(isaalpha(var_name)) {
+                if (isaalpha(var_name)) {
                     if (isOperatorName(var_name)) {
                         //change sign & add operator to stack
                     } else {
@@ -66,53 +83,53 @@ char *infixToPostfix(char *infix) {
             }
         }
 
-        }
-
-
-        // If the scanned character is operand
-        // add it to the postfix expression
-        if (isalnum(infix[i])) {
-            postfix[j++] = infix[i];
-        }
-
-            // if the scanned character is '('
-            // push it in the stack
-        else if (infix[i] == '(') {
-            stack[++top] = infix[i];
-        }
-
-            // if the scanned character is ')'
-            // pop the stack and add it to the
-            // output string until empty or '(' found
-        else if (infix[i] == ')') {
-            while (top > -1 && stack[top] != '(')
-                postfix[j++] = stack[top--];
-            if (top > -1 && stack[top] != '(')
-                return "Invalid Expression";
-            else
-                top--;
-        }
-
-            // If the scanned character is an operator
-            // push it in the stack
-        else if (isOperator(infix[i])) {
-            while (top > -1 && precedence(stack[top]) >= precedence(infix[i]))
-                postfix[j++] = stack[top--];
-            stack[++top] = infix[i];
-        }
     }
+
+
+    // If the scanned character is operand
+    // add it to the postfix expression
+    if (isalnum(infix[i])) {
+        postfix[j++] = infix[i];
+    }
+
+        // if the scanned character is '('
+        // push it in the stack
+    else if (infix[i] == '(') {
+        stack[++top] = infix[i];
+    }
+
+        // if the scanned character is ')'
+        // pop the stack and add it to the
+        // output string until empty or '(' found
+    else if (infix[i] == ')') {
+        while (top > -1 && stack[top] != '(')
+            postfix[j++] = stack[top--];
+        if (top > -1 && stack[top] != '(')
+            return "Invalid Expression";
+        else
+            top--;
+    }
+
+        // If the scanned character is an operator
+        // push it in the stack
+    else if (isOperator(infix[i])) {
+        while (top > -1 && precedence(stack[top]) >= precedence(infix[i]))
+            postfix[j++] = stack[top--];
+        stack[++top] = infix[i];
+    }
+}
 
 
 // Pop all remaining elements from the stack
-    while (top > -1) {
-        if (stack[top] == '(') {
-            return "Error!";
-        }
-        postfix[j++] = stack[top--];
-    }
-    postfix[j] = '\0';
-    return
-            postfix;
+while (top > -1) {
+if (stack[top] == '(') {
+return "Error!";
+}
+postfix[j++] = stack[top--];
+}
+postfix[j] = '\0';
+return
+postfix;
 }
 
 // Driver code
