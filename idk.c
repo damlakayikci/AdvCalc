@@ -27,6 +27,10 @@ int isOperator(char ch) {
     return (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^');
 }
 
+int isOperatorName(char[] ch) {
+    return (ch == "xor" || ch <= "ls" || ch >= "rs" || ch <= "lr" || ch >= "rr" || ch <= "not");
+}
+
 // convert infix expression to postfix expression
 char *infixToPostfix(char *infix) {
     int i, j; // i for the loop, j for keeping track of the postfix expression
@@ -35,40 +39,33 @@ char *infixToPostfix(char *infix) {
     char stack[MAX_EXPR_SIZE];
     int top = -1; // keep track of the element on top of the stack
     int var_name_len = 0; // Initialize variable name length to 0
-    int state = 0; // Initialize state to 0
     char var_name[MAX_LENGTH] = ""; // Initialize variable name to empty string
 
     for (i = 0, j = 0; i < len; i++) {
         if (infix[i] == ' ' || infix[i] == '\t') {
-            state = 0;
+            var_name = "";
+            var_name_len = 0;
             continue;
         }
-        if (state == 0) { // beginning of new token
-            if (isalpha(infix[i])) {
-                state = 1;
-                var_name[var_name_len++] = infix[i];
-            }
-            if (isdigit(infix[i])) {
-                state = 1;
-                var_name[var_name_len++] = infix[i];
-            }
-        } else {
-            if (isalpha(infix[i])) { // If the current character is a letter
-                var_name[var_name_len++] = infix[i];
-                if (!isalpha(infix[i + 1]) || i != len) { // If the next character is not a letter, end of variable name
-                    // check if it's operator name
-                    // add name to dictionary
-                    state = 0;
-                    var_name = "";
+        if (isalnum(infix[i]) {
+            var_name[var_name_len++] = infix[i];
+            if (!isalnum(infix[i + 1]) || i != len) { // If the next character is not a letter or digit, it's the end of variable name
+                // check if it's operator name
+                if(isaalpha(var_name)) {
+                    if (isOperatorName(var_name)) {
+                        //change sign & add operator to stack
+                    } else {
+                        // add name to dictionary
+                    }
+                } else { // it's a number
+                    int num = atoi(var_name);
+                    // add number to dictionary
                 }
-            } else if (isdigit(infix[i])) { // If the current character is a digit
-                var_name[var_name_len++] = infix[i];
-                if (!isdigit(infix[i + 1]) || i != len) { // If the next character is not a digit, end of variable
-                    // add name to dictionary
-                    state = 0;
-                    var_name = "";
-                }
+                var_name = "";
+                var_name_len = 0;
             }
+        }
+
         }
 
 
