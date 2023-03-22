@@ -29,7 +29,7 @@ typedef struct {
     int value;
 } Token;
 
-
+//bakalım ben de editleyebiliyor muyum
 
 int main() {
     char input[MAX_LENGTH];
