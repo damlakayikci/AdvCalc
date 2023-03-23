@@ -37,117 +37,104 @@ int main() {
     char *str;
     int strlength = 0;
     int token_index = 0;
-    char *token = strtok(input, "");
     int i = 0;
     Token *variables[MAX_LENGTH];
     variable_count = 0;
     int input_length = 0;
     while (!controller) {
         fgets(input, MAX_LENGTH, stdin);
+        tokenizer(input);
+    }
+    void tokenizer(char *input) {
         input_length = strlen(input);
         for (i = 0; i < MAX_LENGTH; i++) {
             if (input[i] == '\0') {
                 break;
-            }
-            else if (input[i] == ' ') {
+            } else if (input[i] == ' ') {
                 continue;
-            }
-            else if (isAlpha(input[i])) {
+            } else if (isAlpha(input[i])) {
                 str[strlength] = input[i];
                 strlength++;
-                if (isAlpha(input[i+1]) && (input_length != (i+1)) ) {
-                    continue;}
-                else {
+                if (isAlpha(input[i + 1]) && (input_length != (i + 1))) {
+                    continue;
+                } else {
                     if (strcmp(str, "xor") == 0) {
                         token[token_index].type = TOKEN_TYPE_XOR;
                         token[token_index].name = "^";
-                    }
-                    else if (strcmp(str, "not") == 0) {
+                    } else if (strcmp(str, "not") == 0) {
                         token[token_index].type = TOKEN_TYPE_NOT;
                         token[token_index].name = "!";
-                    }
-                    else if (strcmp(str, "ls") == 0) {
+                    } else if (strcmp(str, "ls") == 0) {
                         token[token_index].type = TOKEN_TYPE_LS;
                         token[token_index].name = "<";
-                    }
-                    else if (strcmp(str, "rs") == 0) {
+                    } else if (strcmp(str, "rs") == 0) {
                         token[token_index].type = TOKEN_TYPE_RS;
                         token[token_index].name = ">";
-                    }
-                    else if (strcmp(str, "lr") == 0) {
+                    } else if (strcmp(str, "lr") == 0) {
                         token[token_index].type = TOKEN_TYPE_LR;
                         token[token_index].name = "$";
-                    }
-                    else if (strcmp(str, "rr") == 0) {
+                    } else if (strcmp(str, "rr") == 0) {
                         token[token_index].type = TOKEN_TYPE_RR;
                         token[token_index].name = "€";
-                    }
-                    else{
-                    token[token_index].type = TOKEN_TYPE_IDENTIFIER;
-                    token[token_index].name = str;
-                    variables[variable_count] = token[token_index];
-                    variable_count++;
+                    } else {
+                        token[token_index].type = TOKEN_TYPE_IDENTIFIER;
+                        token[token_index].name = str;
+                        variables[variable_count] = token[token_index];
+                        variable_count++;
                     }
                     token_index++;
                     str = NULL;
                     strlength = 0;
                 }
-            }
-            else if (isDigit(input[i])) {
+            } else if (isDigit(input[i])) {
                 str[strlength] = input[i];
                 strlength++;
-                if (isDigit(input[i+1]) && (input_length != (i+1))) {
-                    continue;}
-                else {
+                if (isDigit(input[i + 1]) && (input_length != (i + 1))) {
+                    continue;
+                } else {
                     token[token_index].type = TOKEN_TYPE_NUMBER;
                     token[token_index].value = atoi(str);
                     token_index++;
                     str = NULL;
                     strlength = 0;
                 }
-            }
-            else if (input[i] == '+') {
+            } else if (input[i] == '+') {
                 token[token_index].type = TOKEN_TYPE_PLUS;
                 token[token_index].name = "+";
                 token_index++;
-            }
-            else if (input[i] == '-') {
+            } else if (input[i] == '-') {
                 token[token_index].type = TOKEN_TYPE_MINUS;
                 token[token_index].name = "-";
                 token_index++;
-            }
-            else if (input[i] == '*') {
+            } else if (input[i] == '*') {
                 token[token_index].type = TOKEN_TYPE_ASTERISK;
                 token[token_index].name = "*";
                 token_index++;
-            }
-            else if (input[i] == '|') {
+            } else if (input[i] == '|') {
                 token[token_index].type = TOKEN_TYPE_PIPE;
                 token[token_index].name = "|";
                 token_index++;
-            }
-            else if (input[i] == '&') {
+            } else if (input[i] == '&') {
                 token[token_index].type = TOKEN_TYPE_AMPERSAND;
                 token[token_index].name = "&";
                 token_index++;
-            }
-            else if (input[i] == '(') {
+            } else if (input[i] == '(') {
                 token[token_index].type = TOKEN_TYPE_OPENPARENTHESIS;
                 token[token_index].name = "(";
                 token_index++;
-            }
-            else if (input[i] == ')') {
+            } else if (input[i] == ')') {
                 token[token_index].type = TOKEN_TYPE_CLOSEPARENTHESIS;
                 token[token_index].name = ")";
                 token_index++;
-            }
-            else if (input[i] == '=') {
+            } else if (input[i] == '=') {
                 token[token_index].type = TOKEN_TYPE_EQUALS;
                 token[token_index].name = "=";
                 token_index++;
-                
+                calculator(infixtopostfix(tokenizer(input[i:])))
             }
         }
+    }
+}
 
 
 
