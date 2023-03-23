@@ -93,6 +93,7 @@ int main() {
                     continue;
                 } else {
                     token[token_index].type = TOKEN_TYPE_NUMBER;
+                    token[token_index].name = atoi(str);
                     token[token_index].value = atoi(str);
                     token_index++;
                     str = NULL;
