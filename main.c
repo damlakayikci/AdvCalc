@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 #define MAX_LENGTH 256
 
@@ -25,7 +26,7 @@ typedef enum {
 
 typedef struct {
     TokenType type;
-    int value = 0
+    int value = 0;
     char *name = NULL;
 } Token;
 
@@ -35,29 +36,29 @@ int main() {
     int controller = 0;
     int input_length = 0;
     Token *variables[MAX_LENGTH];
-    variable_count = 0;
+    int variable_count = 0;
     while (!controller) { //general while loop
         fgets(input, MAX_LENGTH, stdin); // taking input
-        tokenizer(input); //tokenize the input
+        Token infix = tokenizer(input); //tokenize the input
     }
 }
 
 Token tokenizer(char *input) { //tokenizer function
-    Token token[MAX_LENGTH];
+    Token *token[MAX_LENGTH];
     int i = 0;
     int token_index = 0;
     char *str;
     int strlength = 0;
-    input_length = strlen(input);
+    int input_length = strlen(input);
     for (i = 0; i < MAX_LENGTH; i++) {
         if (input[i] == '\0') {
             break;
         } else if (input[i] == ' ') {
             continue;
-        } else if (isAlpha(input[i])) {
+        } else if (isalpha(input[i])) {
             str[strlength] = input[i];
             strlength++;
-            if (isAlpha(input[i + 1]) && (input_length != (i + 1))) {
+            if (isalpha(input[i + 1]) && (input_length != (i + 1))) {
                 continue;
             } else {
                 if (strcmp(str, "xor") == 0) {
@@ -88,10 +89,10 @@ Token tokenizer(char *input) { //tokenizer function
                 str = NULL;
                 strlength = 0;
             }
-        } else if (isDigit(input[i])) {
+        } else if (isdigit(input[i])) {
             str[strlength] = input[i];
             strlength++;
-            if (isDigit(input[i + 1]) && (input_length != (i + 1))) {
+            if (isdigit(input[i + 1]) && (input_length != (i + 1))) {
                 continue;
             } else {
                 token[token_index].type = TOKEN_TYPE_NUMBER;
