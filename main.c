@@ -8,7 +8,6 @@ typedef enum {
     TOKEN_TYPE_PLUS,
     TOKEN_TYPE_MINUS,
     TOKEN_TYPE_ASTERISK,
-    TOKEN_TYPE_SLASH,
     TOKEN_TYPE_AMPERSAND,
     TOKEN_TYPE_PIPE,
     TOKEN_TYPE_XOR,
@@ -26,88 +25,129 @@ typedef enum {
 
 typedef struct {
     TokenType type;
-    int value;
+    int value = 0
+    char *name = NULL;
 } Token;
 
-//bakalım ben de editleyebiliyor muyum
 
 int main() {
     char input[MAX_LENGTH];
     int controller = 0;
     Token token[MAX_LENGTH];
-    char *str[MAX_LENGTH];
-
+    char *str;
+    int strlength = 0;
+    int token_index = 0;
+    char *token = strtok(input, "");
+    int i = 0;
+    Token *variables[MAX_LENGTH];
+    variable_count = 0;
+    int input_length = 0;
     while (!controller) {
         fgets(input, MAX_LENGTH, stdin);
-        int i = 0;
-        str = strtok(input, "");
-        char var_name[MAX_LENGTH] = ""; // Initialize variable name to empty string
-        int var_name_len = 0; // Initialize variable name length to 0
-        int state = 0; // Initialize state to 0
-        while (str != NULL) {
-            switch (state) {
-                case 0: // Initial state
-                    if (isalpha(str[i])) {
-                        var_name[var_name_len++] = str[i];
-                        state = 1;
-                    } else if (isdigit(str[i])) {
-                        state = 2;
-                    } else if (str[i] == '+') {
-                        state = 3;
-                    } else if (str[i] == '-') {
-                        state = 4;
-                    } else if (str[i] == '*') {
-                        state = 5;
-                    } else if (str[i] == '/') {
-                        state = 6;
-                    } else if (str[i] == '&') {
-                        state = 7;
-                    } else if (str[i] == '|') {
-                        state = 8;
-                    } else if (str[i] == '^') {
-                        state = 9;
-                    } else if (str[i] == '<') {
-                        state = 10;
-                    } else if (str[i] == '>') {
-                        state = 11;
-                    } else if (str[i] == '!') {
-                        state = 12;
-                    } else if (str[i] == '(') {
-                        state = 13;
-                    } else if (str[i] == ')') {
-                        state = 14;
-                    } else if (str[i] == ',') {
-                        state = 15;
-                    } else if (str[i] == '=') {
-                        state = 16;
-                    } else if (str[i] == ' ') {
-                        state = 0;
-                    } else {
-                        state = 17;
+        input_length = strlen(input);
+        for (i = 0; i < MAX_LENGTH; i++) {
+            if (input[i] == '\0') {
+                break;
+            }
+            else if (input[i] == ' ') {
+                continue;
+            }
+            else if (isAlpha(input[i])) {
+                str[strlength] = input[i];
+                strlength++;
+                if (isAlpha(input[i+1]) && (input_length != (i+1)) ) {
+                    continue;}
+                else {
+                    if (strcmp(str, "xor") == 0) {
+                        token[token_index].type = TOKEN_TYPE_XOR;
+                        token[token_index].name = "^";
                     }
-                    break;
-                case 1: // Variable name
-                    if (isalpha(str[i])) {
-                        var_name[var_name_len++] = str[i];
-                        state = 1;
-                    } else if (isdigit(str[i])) {
-                        var_name[var_name_len++] = str[i];
-                        state = 1;
-                    } else if (str[i] == '+') {
-                        state = 3;
-                    } else if (str[i] == '-') {
-                        state = 4;
-                    } else if (str[i] == '*') {
-                        state = 5;
-                    } else if (str[i] == '/') {
-                        state = 6;
-                    } else if (str[i] == '&') {
-                        state = 7;
-                    } else if (str[i]
-
-
-
-    }
+                    else if (strcmp(str, "not") == 0) {
+                        token[token_index].type = TOKEN_TYPE_NOT;
+                        token[token_index].name = "!";
+                    }
+                    else if (strcmp(str, "ls") == 0) {
+                        token[token_index].type = TOKEN_TYPE_LS;
+                        token[token_index].name = "<";
+                    }
+                    else if (strcmp(str, "rs") == 0) {
+                        token[token_index].type = TOKEN_TYPE_RS;
+                        token[token_index].name = ">";
+                    }
+                    else if (strcmp(str, "lr") == 0) {
+                        token[token_index].type = TOKEN_TYPE_LR;
+                        token[token_index].name = "$";
+                    }
+                    else if (strcmp(str, "rr") == 0) {
+                        token[token_index].type = TOKEN_TYPE_RR;
+                        token[token_index].name = "€";
+                    }
+                    else{
+                    token[token_index].type = TOKEN_TYPE_IDENTIFIER;
+                    token[token_index].name = str;
+                    variables[variable_count] = token[token_index];
+                    variable_count++;
+                    }
+                    token_index++;
+                    str = NULL;
+                    strlength = 0;
+                }
+            }
+            else if (isDigit(input[i])) {
+                str[strlength] = input[i];
+                strlength++;
+                if (isDigit(input[i+1]) && (input_length != (i+1))) {
+                    continue;}
+                else {
+                    token[token_index].type = TOKEN_TYPE_NUMBER;
+                    token[token_index].value = atoi(str);
+                    token_index++;
+                    str = NULL;
+                    strlength = 0;
+                }
+            }
+            else if (input[i] == '+') {
+                token[token_index].type = TOKEN_TYPE_PLUS;
+                token[token_index].name = "+";
+                token_index++;
+            }
+            else if (input[i] == '-') {
+                token[token_index].type = TOKEN_TYPE_MINUS;
+                token[token_index].name = "-";
+                token_index++;
+            }
+            else if (input[i] == '*') {
+                token[token_index].type = TOKEN_TYPE_ASTERISK;
+                token[token_index].name = "*";
+                token_index++;
+            }
+            else if (input[i] == '|') {
+                token[token_index].type = TOKEN_TYPE_PIPE;
+                token[token_index].name = "|";
+                token_index++;
+            }
+            else if (input[i] == '&') {
+                token[token_index].type = TOKEN_TYPE_AMPERSAND;
+                token[token_index].name = "&";
+                token_index++;
+            }
+            else if (input[i] == '(') {
+                token[token_index].type = TOKEN_TYPE_OPENPARENTHESIS;
+                token[token_index].name = "(";
+                token_index++;
+            }
+            else if (input[i] == ')') {
+                token[token_index].type = TOKEN_TYPE_CLOSEPARENTHESIS;
+                token[token_index].name = ")";
+                token_index++;
+            }
+            else if (input[i] == '=') {
+                token[token_index].type = TOKEN_TYPE_EQUALS;
+                token[token_index].name = "=";
+                token_index++;
+                
+            }
+        }
 
 
 
