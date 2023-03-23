@@ -30,6 +30,7 @@ typedef struct {
     char *name ;
 } Token;
 
+Token tokenizer(char *input, int variable_count, Token *variables);
 
 int main() {
     char input[MAX_LENGTH];
@@ -38,7 +39,8 @@ int main() {
     int variable_count = 0;
     while (!controller) { //general while loop
         fgets(input, MAX_LENGTH, stdin); // taking input
-        Token infix = tokenizer(input, variable_count, *variables); //tokenize the input
+        Token infix[MAX_LENGTH];
+        strcpy(*infix,tokenizer(input, variable_count, *variables)); //tokenize the input
     }
 }
 
@@ -141,7 +143,7 @@ Token tokenizer(char *input, int variable_count, Token *variables) { //tokenizer
             }
         }
     }
-    return token;
+    return *token;
 }
 
 
