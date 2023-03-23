@@ -33,20 +33,20 @@ typedef struct {
 int main() {
     char input[MAX_LENGTH];
     int controller = 0;
-    Token token[MAX_LENGTH];
-    char *str;
-    int strlength = 0;
-    int token_index = 0;
-    int i = 0;
-    Token *variables[MAX_LENGTH];
-    variable_count = 0;
     int input_length = 0;
     while (!controller) { //general while loop
         fgets(input, MAX_LENGTH, stdin); // taking input
         tokenizer(input); //tokenize the input
     }
-    void tokenizer(char *input) { //tokenizer function
+    Token tokenizer(char *input) { //tokenizer function
+        Token token[MAX_LENGTH];
+        int i = 0;
+        int token_index = 0;
+        char *str;
+        int strlength = 0;
+        variable_count = 0;
         input_length = strlen(input);
+        Token *variables[MAX_LENGTH];
         for (i = 0; i < MAX_LENGTH; i++) {
             if (input[i] == '\0') {
                 break;
@@ -130,7 +130,14 @@ int main() {
                 token[token_index].type = TOKEN_TYPE_EQUALS;
                 token[token_index].name = "=";
                 token_index++;
-                calculator(infixtopostfix(tokenizer(input[i:])))
+                int result = calculator(infixtopostfix(tokenizer(input[i:]))); //result of the right expression
+                if (strcmp(str, variables[variable_count - 1]->name) == 0) { //check if the variable is same as the last one
+                    variables[variable_count - 1]->value = result;
+                } else { //if not, give an error
+                    printf("Error!");
+                }
+
+                }
             }
         }
         return token;
