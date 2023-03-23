@@ -34,6 +34,8 @@ int main() {
     char input[MAX_LENGTH];
     int controller = 0;
     int input_length = 0;
+    Token *variables[MAX_LENGTH];
+    variable_count = 0;
     while (!controller) { //general while loop
         fgets(input, MAX_LENGTH, stdin); // taking input
         tokenizer(input); //tokenize the input
@@ -44,9 +46,7 @@ int main() {
         int token_index = 0;
         char *str;
         int strlength = 0;
-        variable_count = 0;
         input_length = strlen(input);
-        Token *variables[MAX_LENGTH];
         for (i = 0; i < MAX_LENGTH; i++) {
             if (input[i] == '\0') {
                 break;
