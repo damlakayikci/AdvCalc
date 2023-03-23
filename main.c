@@ -41,11 +41,11 @@ int main() {
     Token *variables[MAX_LENGTH];
     variable_count = 0;
     int input_length = 0;
-    while (!controller) {
-        fgets(input, MAX_LENGTH, stdin);
-        tokenizer(input);
+    while (!controller) { //general while loop
+        fgets(input, MAX_LENGTH, stdin); // taking input
+        tokenizer(input); //tokenize the input
     }
-    void tokenizer(char *input) {
+    void tokenizer(char *input) { //tokenizer function
         input_length = strlen(input);
         for (i = 0; i < MAX_LENGTH; i++) {
             if (input[i] == '\0') {
@@ -133,6 +133,7 @@ int main() {
                 calculator(infixtopostfix(tokenizer(input[i:])))
             }
         }
+        return token;
     }
 }
 
