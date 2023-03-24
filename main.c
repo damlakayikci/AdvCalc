@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 #define MAX_LENGTH 256
 
@@ -26,11 +27,11 @@ typedef enum {
 
 typedef struct {
     TokenType type;
-    int value ;
-    char *name ;
+    int value;
+    char[] name;
 } Token;
 
-Token tokenizer(char *input, int variable_count, Token *variables);
+Token tokenizer(char *input, int variable_count, Token[] variables);
 
 int main() {
     char input[MAX_LENGTH];
@@ -40,18 +41,18 @@ int main() {
     while (!controller) { //general while loop
         fgets(input, MAX_LENGTH, stdin); // taking input
         Token infix[MAX_LENGTH];
-        strcpy(*infix,tokenizer(input, variable_count, *variables)); //tokenize the input
+        strcpy(*infix, tokenizer(input, variable_count, *variables)); //tokenize the input
     }
 }
 
-Token tokenizer(char *input, int variable_count, Token *variables) { //tokenizer function
+Token tokenizer(char *input, int variable_count, Token[] variables) { //tokenizer function
     Token *token[MAX_LENGTH];
     int i = 0;
     int token_index = 0;
-    char *str;
+    char str[MAX_LENGTH];
     int strlength = 0;
     int input_length = strlen(input);
-    for (i = 0; i < MAX_LENGTH; i++) {
+    for (i = 0; i < MAX_LENGTH; i++) {h
         if (input[i] == '\0') {
             break;
         } else if (input[i] == ' ') {
