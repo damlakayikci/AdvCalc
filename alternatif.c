@@ -32,6 +32,10 @@ typedef struct {
     char *name;
 } Token;
 
+int isOperatorName(char* ch) {
+    return (strcmp(ch, "xor") == 0 || strcmp(ch, "ls") <= 0 || strcmp(ch, "rs") >= 0 || strcmp(ch, "lr") <= 0 || strcmp(ch, "rr") >= 0 || strcmp(ch, "not") <= 0);
+}
+
 /*
 Token** tokenizer(char *input, int variable_count, Token* variables) { //tokenizer function
     Token *token= malloc(MAX_LENGTH * sizeof(Token));  // allocate memory for token array
@@ -106,42 +110,92 @@ typedef struct {
 } Token;
 */
 Token* tokenizer(char *input) {
+    // get the length of the input string
     int input_length = strlen(input);
+    
+    // allocate memory for the array of tokens
     Token *tokens = malloc(sizeof(Token) * input_length);
+    
+    // keep track of the number of tokens found so far
     int num_tokens = 0;
     
+    // iterate through the input string, one character at a time
     int i = 0;
     while (i < input_length) {
+        
+        // if the current character is a digit, parse it as a number
         if (isdigit(input[i])) {
+            // find the end of the number
             int j = i;
             while (isdigit(input[j])) {
                 j++;
             }
+            
+            // extract the number string from the input
             char *num_str = malloc(sizeof(char) * (j - i + 1));
             strncpy(num_str, &input[i], j - i);
             num_str[j-i] = '\0';
+            
+            // convert the number string to an integer
             int num = atoi(num_str);
+            
+            // add the number as a new token to the array
             tokens[num_tokens].value = num;
             tokens[num_tokens].name = NULL;
+            tokens[num_tokens].type = TOKEN_TYPE_NUMBER;
             num_tokens++;
+            
+            // move the index to the end of the number
             i = j;
+            
+            // free the temporary number string memory
             free(num_str);
+        
+        // if the current character is a letter, parse it as a string
         } else if (isalpha(input[i])) {
+            // find the end of the string
             int j = i;
             while (isalpha(input[j])) {
                 j++;
             }
+            
+            // extract the string from the input
             char *name = malloc(sizeof(char) * (j - i + 1));
             strncpy(name, &input[i], j - i);
             name[j-i] = '\0';
+            
+            if (isOperatorName(name)) {
+                tokens[num_tokens].name = name;
+                if (strcmp(name, "xor") == 0) {
+                    tokens[num_tokens].type = TOKEN_TYPE_XOR;
+                } else if (strcmp(name, "ls") == 0) {
+                    tokens[num_tokens].type = TOKEN_TYPE_LS;
+                } else if (strcmp(name, "rs") == 0) {
+                    tokens[num_tokens].type = TOKEN_TYPE_RS;
+                } else if (strcmp(name, "lr") == 0) {
+                    tokens[num_tokens].type = TOKEN_TYPE_LR;
+                } else if (strcmp(name, "rr") == 0) {
+                    tokens[num_tokens].type = TOKEN_TYPE_RR;
+                } else if (strcmp(name, "not") == 0) {
+                    tokens[num_tokens].type = TOKEN_TYPE_NOT;
+                }
+            } else {            // add the string as a new token to the array
             tokens[num_tokens].value = 0;
             tokens[num_tokens].name = name;
+            tokens[num_tokens].type = TOKEN_TYPE_IDENTIFIER;
+            }
             num_tokens++;
+            
+            // move the index to the end of the string
             i = j;
+        
+        // if the current character is not a letter or digit, ignore it
         } else {
             i++;
         }
     }
+    
+    // return the array of tokens
     return tokens;
 }
 
