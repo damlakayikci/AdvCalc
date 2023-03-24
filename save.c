@@ -59,7 +59,7 @@ char formatController(Token input){
             int j = i;
             while(j < sizeof(input)){
                 if (input[i+1]->name == "("){
-
+                    
                 }
                 else{
                     printf("Error: Invalid syntax");
