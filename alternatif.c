@@ -190,7 +190,8 @@ Token* tokenizer(char *input) {
             i = j;
         
         // if the current character is not a letter or digit, ignore it
-        } else {
+        } //else if (isOperator(index[i])){}
+        else {
             i++;
         }
     }
