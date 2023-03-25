@@ -131,41 +131,25 @@ Token *tokenizer(char *input) {
             strncpy(name, &input[i], 1);
             if (input[i] == '+') {
                 tokens[num_tokens].type = TOKEN_TYPE_PLUS;
-                tokens[num_tokens].name = name;
-                tokens[num_tokens].name[1] = '\0';
             } else if (input[i] == '-') {
                 tokens[num_tokens].type = TOKEN_TYPE_MINUS;
-                tokens[num_tokens].name = name;
-                tokens[num_tokens].name[1] = '\0';
             } else if (input[i] == '*') {
                 tokens[num_tokens].type = TOKEN_TYPE_ASTERISK;
-                tokens[num_tokens].name = name;
-                tokens[num_tokens].name[1] = '\0';
             } else if (input[i] == '&') {
                 tokens[num_tokens].type = TOKEN_TYPE_AMPERSAND;
-                tokens[num_tokens].name = name;
-                tokens[num_tokens].name[1] = '\0';
             } else if (input[i] == '|') {
                 tokens[num_tokens].type = TOKEN_TYPE_PIPE;
-                tokens[num_tokens].name = name;
-                tokens[num_tokens].name[1] = '\0';
             } else if (input[i] == '(') {
                 tokens[num_tokens].type = TOKEN_TYPE_OPENPARENTHESIS;
-                tokens[num_tokens].name = name;
-                tokens[num_tokens].name[1] = '\0';
             } else if (input[i] == ')') {
                 tokens[num_tokens].type = TOKEN_TYPE_CLOSEPARENTHESIS;
-                tokens[num_tokens].name = name;
-                tokens[num_tokens].name[1] = '\0';
             } else if (input[i] == ',') {
                 tokens[num_tokens].type = TOKEN_TYPE_COMMA;
-                tokens[num_tokens].name = name;
-                tokens[num_tokens].name[1] = '\0';
             } else if (input[i] == '=') {
                 tokens[num_tokens].type = TOKEN_TYPE_EQUALS;
-                tokens[num_tokens].name = name;
-                tokens[num_tokens].name[1] = '\0';
             }
+            tokens[num_tokens].name = name;
+            tokens[num_tokens].name[1] = '\0';
             tokens[num_tokens].value = 0;
             num_tokens++;
             i++;
