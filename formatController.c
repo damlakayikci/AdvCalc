@@ -1,36 +1,11 @@
-
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include "token.h"
 
 #define MAX_LENGTH 256
 
-typedef enum {
-    TOKEN_TYPE_NUMBER,
-    TOKEN_TYPE_PLUS,
-    TOKEN_TYPE_MINUS,
-    TOKEN_TYPE_ASTERISK,
-    TOKEN_TYPE_AMPERSAND,
-    TOKEN_TYPE_PIPE,
-    TOKEN_TYPE_XOR,
-    TOKEN_TYPE_LS,
-    TOKEN_TYPE_RS,
-    TOKEN_TYPE_LR,
-    TOKEN_TYPE_RR,
-    TOKEN_TYPE_NOT,
-    TOKEN_TYPE_OPENPARENTHESIS,
-    TOKEN_TYPE_CLOSEPARENTHESIS,
-    TOKEN_TYPE_COMMA,
-    TOKEN_TYPE_IDENTIFIER,
-    TOKEN_TYPE_EQUALS,
-} TokenType;
-
-typedef struct {
-    TokenType type;
-    int value;
-    char *name;
-} Token;
 
 int isOperatorName(char *ch) {
     return (strcmp(ch, "xor") == 0 || strcmp(ch, "ls") == 0 || strcmp(ch, "rs") == 0 || strcmp(ch, "lr") == 0 ||
@@ -107,7 +82,7 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
                     tokens[*num_tokens].name = "$";
                 } else if (strcmp(name, "rr") == 0) {
                     tokens[*num_tokens].type = TOKEN_TYPE_RR;
-                    tokens[*num_tokens].name = "€";
+                    tokens[*num_tokens].name = "#";
                 } else if (strcmp(name, "not") == 0) {
                     tokens[*num_tokens].type = TOKEN_TYPE_NOT;
                     tokens[*num_tokens].name = "!";
@@ -174,11 +149,16 @@ Token *formatController(Token *input, int inputSize, int recursive){
     while(i < inputSize){       //for each token
         int parenthesisCount = 0;       //count the parenthesis
         if(isFunctionOperator(input[i].name)){     //if it is a function operator
+            if (strcmp(input[i+1].name, "(") != 0){      //if it is not an open parenthesis
+                printf("Error!");
+                i++;
+                break;}
             parenthesisCount++;
             int j = 0;
-            while(parenthesisCount != 0){    //while the parenthesis are not closed
-                if(i+j == inputSize){    //if the end of the input is reached
-                    printf("Error!\n");
+            while(parenthesisCount != 0){   //while the parenthesis are not closed
+                parenthesisCount = 0;
+                if(i+j == inputSize-1){    //if the end of the input is reached
+                    printf("Error!");
                     j++;
                     break;
                 }else if(input[i+j].type == TOKEN_TYPE_OPENPARENTHESIS){       //if it is an open parenthesis
@@ -194,7 +174,7 @@ Token *formatController(Token *input, int inputSize, int recursive){
                     parenthesisCount--;
                     j++;
                 }else if(isFunctionOperator(input[i+j].name)){     //if it is a function operator
-                    Token *anotherFunctionOperator = malloc(sizeof(Token) * inputSize-i-j);   //create a new array for the tokens for the recursive call
+                    Token *anotherFunctionOperator = malloc(sizeof(Token) * (inputSize-i-j));   //create a new array for the tokens for the recursive call
                     int k = 0;
                     while(k < inputSize-i-j){       //copy the tokens to another array
                         anotherFunctionOperator[k].type = input[i+j+k].type;
@@ -220,6 +200,11 @@ Token *formatController(Token *input, int inputSize, int recursive){
                     output_count++;   //increase the output count
                     //change the stage
                     j++;
+                }else{
+                    output[i+j].type = input[i+j].type;   //if it is not a function operator, add it to the output
+                    output[i+j].name = input[i+j].name;
+                    output_count++;   //increase the output count
+                    j++;
                 }
             }
             i+=j;    //skip the tokens that are already processed
@@ -227,7 +212,7 @@ Token *formatController(Token *input, int inputSize, int recursive){
                 return output;
             }
         }else if(strcmp(input[i].name, ",") == 0) {
-            printf("Error!\n");   //if it is a comma, give an error
+            printf("Error!");   //if it is a comma, give an error
             break;
         }else{
             output[i].type = input[i].type;   //if it is not a function operator, add it to the output
@@ -250,21 +235,20 @@ int main() {
 
 
     // controller
-    for (int i = 0; i < num_tokens; i++) {
-        printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, tokens[i].name, tokens[i].type,
-               tokens[i].value);
-    }
-    for (int i = 0; i < num_variables; i++) {
-         printf("Variable %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, variables[i].name, variables[i].type,
-               variables[i].value);
-        }
-        printf("\n\n");
+//    for (int i = 0; i < num_tokens; i++) {
+//        printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, tokens[i].name, tokens[i].type,
+//               tokens[i].value);
+//    }
+//    for (int i = 0; i < num_variables; i++) {
+//        printf("Variable %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, variables[i].name, variables[i].type,
+//               variables[i].value);
+//    }
     // end controller
 
     Token *output = formatController(tokens, num_tokens, 0);
     int i = 0;
     while(output[i].name != NULL){
-        printf("OUTPUT %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, output[i].name, output[i].type,
+        printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, output[i].name, output[i].type,
                output[i].value);
         i++;
     }
