@@ -8,7 +8,6 @@
 #define MAX_LENGTH 256
 
 
-
 int isOperatorName(char *ch) {
     return (strcmp(ch, "xor") == 0 || strcmp(ch, "ls") == 0 || strcmp(ch, "rs") == 0 || strcmp(ch, "lr") == 0 ||
             strcmp(ch, "rr") == 0 || strcmp(ch, "not") == 0);
@@ -25,9 +24,6 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
 
     // allocate memory for the array of tokens
     Token *tokens = malloc(sizeof(Token) * input_length);
-
-    // keep track of the number of tokens found so far
-    //int *num_tokens = 0;
 
     // iterate through the input string, one character at a time
     int i = 0;
@@ -151,6 +147,9 @@ int main() {
     printf("Enter input string: ");
     fgets(input, 256, stdin);
     Token *tokens = tokenizer(input, &num_tokens, variables, &num_variables);
+
+
+    // controller
     for (int i = 0; i < num_tokens; i++) {
         printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, tokens[i].name, tokens[i].type,
                tokens[i].value);
@@ -159,6 +158,9 @@ int main() {
          printf("Variable %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, variables[i].name, variables[i].type,
                variables[i].value);
         }
+    // end controller
+
+
     free(tokens);
     return 0;
 }

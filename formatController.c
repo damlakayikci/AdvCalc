@@ -42,15 +42,12 @@ int isOperator(char *ch) {
 }
 
 
-Token *tokenizer(char *input, int *num_tokens) {
+Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variables) {
     // get the length of the input string
     int input_length = strlen(input);
 
     // allocate memory for the array of tokens
     Token *tokens = malloc(sizeof(Token) * input_length);
-
-    // keep track of the number of tokens found so far
-    //int *num_tokens = 0;
 
     // iterate through the input string, one character at a time
     int i = 0;
@@ -110,7 +107,7 @@ Token *tokenizer(char *input, int *num_tokens) {
                     tokens[*num_tokens].name = "$";
                 } else if (strcmp(name, "rr") == 0) {
                     tokens[*num_tokens].type = TOKEN_TYPE_RR;
-                    tokens[*num_tokens].name = "#";
+                    tokens[*num_tokens].name = "€";
                 } else if (strcmp(name, "not") == 0) {
                     tokens[*num_tokens].type = TOKEN_TYPE_NOT;
                     tokens[*num_tokens].name = "!";
@@ -119,6 +116,10 @@ Token *tokenizer(char *input, int *num_tokens) {
                 tokens[*num_tokens].value = 0;
                 tokens[*num_tokens].name = name;
                 tokens[*num_tokens].type = TOKEN_TYPE_IDENTIFIER;
+                variables[*num_variables].value = 0;
+                variables[*num_variables].name = name;
+                variables[*num_variables].type = TOKEN_TYPE_IDENTIFIER;
+                (*num_variables)++;
             }
             (*num_tokens)++;
 
@@ -177,7 +178,7 @@ Token *formatController(Token *input, int inputSize, int recursive){
             int j = 0;
             while(parenthesisCount != 0){    //while the parenthesis are not closed
                 if(i+j == inputSize){    //if the end of the input is reached
-                    printf("Error!");
+                    printf("Error!\n");
                     j++;
                     break;
                 }else if(input[i+j].type == TOKEN_TYPE_OPENPARENTHESIS){       //if it is an open parenthesis
@@ -226,7 +227,7 @@ Token *formatController(Token *input, int inputSize, int recursive){
                 return output;
             }
         }else if(strcmp(input[i].name, ",") == 0) {
-            printf("Error!");   //if it is a comma, give an error
+            printf("Error!\n");   //if it is a comma, give an error
             break;
         }else{
             output[i].type = input[i].type;   //if it is not a function operator, add it to the output
@@ -240,20 +241,30 @@ Token *formatController(Token *input, int inputSize, int recursive){
 
 int main() {
     int num_tokens = 0;
+    int num_variables = 0;
+    Token *variables = malloc(sizeof(Token) * 256);
     char input[256];
     printf("Enter input string: ");
     fgets(input, 256, stdin);
-    Token *tokens = tokenizer(input, &num_tokens);
-//    for (int i = 0; i < strlen(input); i++) {
-//        printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, tokens[i].name, tokens[i].type,
-//               tokens[i].value);
-//    }
-//    printf("Number of tokens: %d\n", num_tokens);
+    Token *tokens = tokenizer(input, &num_tokens, variables, &num_variables);
+
+
+    // controller
+    for (int i = 0; i < num_tokens; i++) {
+        printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, tokens[i].name, tokens[i].type,
+               tokens[i].value);
+    }
+    for (int i = 0; i < num_variables; i++) {
+         printf("Variable %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, variables[i].name, variables[i].type,
+               variables[i].value);
+        }
+        printf("\n\n");
+    // end controller
 
     Token *output = formatController(tokens, num_tokens, 0);
     int i = 0;
     while(output[i].name != NULL){
-        printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, output[i].name, output[i].type,
+        printf("OUTPUT %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, output[i].name, output[i].type,
                output[i].value);
         i++;
     }
