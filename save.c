@@ -70,7 +70,7 @@ Token formatController(Token *input, int input_Size){
             int parenthesis_count = 0;
             int j = i+1;
             while(j < strlen(input_Size)){
-                if (strcmp(input[i+1]->name, "(") == 0){
+                if (strcmp(input[i+1]->name, "(") != 0){
                     printf("Error: Invalid syntax");
                     return 0;
                 }
@@ -111,7 +111,7 @@ Token formatController(Token *input, int input_Size){
                 }
                 else if(flag_comma == 1){
                     if(input[j]->name == ")"){
-                        return
+                        break;
                     }
                     else if(strcmp(input[j]->name, ",") == 0){
                         printf("Error: Invalid syntax");
@@ -142,12 +142,18 @@ Token formatController(Token *input, int input_Size){
                 }
                 j++;
             }
+            int k = 0;
+            while(k < input_Size-j){
+                output[]
         }
         else if(strcmp(input[i]->name, "!") == 0 && i < strlen(input_Size) - 3){
 
         }
         output[i] = input[i];
         i++;
+        free(flag);
+        free(flag2);
+    }
     }
 }
 
