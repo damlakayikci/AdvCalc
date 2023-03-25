@@ -48,29 +48,105 @@ int isOperator(char ch){
     return (ch == '^' || ch == '<' || ch == '>' || ch == '$' || ch == '€');
 }
 
-char formatController(Token input){
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+
+#define MAX_LENGTH 256
+
+
+Token formatController(Token *input, int input_Size){
     int i = 0;
-    char *flag = malloc(sizeof(char) * sizeof (input));
-    int flag_count = 0;
-    char *flag2 = malloc(sizeof(char) * sizeof (input));
-    int flag_count2 = 0;
-    while(i < sizeof(input)){
-        if(isOperator(input[i]->name) && i != strlen(input) - 1){
-            int j = i;
-            while(j < sizeof(input)){
-                if (input[i+1]->name == "("){
-                    
-                }
-                else{
+    Token *output[strlen(input_Size)];
+    while(i < strlen(input_Size)){
+        if(isOperator(input[i]->name) && i < strlen(input_Size) - 5){
+            Token *flag = malloc(sizeof(Token) * strlen(input_Size));
+            int flag_count = 0;
+            Token *flag2 = malloc(sizeof(Token) * strlen(input_Size));
+            int flag_count2 = 0;
+            int flag_comma = 0;
+            int parenthesis_count = 0;
+            int j = i+1;
+            while(j < strlen(input_Size)){
+                if (strcmp(input[i+1]->name, "(") == 0){
                     printf("Error: Invalid syntax");
                     return 0;
+                }
+                else if(flag_comma == 0){
+                    if(strcmp(input[j]->name, ",") == 0){
+                        flag[flag_count]->name = input[i].name;
+                        flag[flag_count]->value = input[i].value;
+                        flag[flag_count]->type = input[i].type;
+                        flag_count++;
+                        flag_comma = 1;
+                    }
+                    else if(strcmp(input[j]->name, ")") == 0){
+                        printf("Error: Invalid syntax");
+                        return 0;
+                    }
+                    else if(isOperator(input[j]->name)){
+                        Token *anotherOperator = malloc(sizeof(Token) * input_Size-j);
+                        int k = 0;
+                        while(k < input_Size-j){
+                            anotherOperator[k]->name = input[j+k]->name;
+                            anotherOperator[k]->value = input[j+k]->value;
+                            anotherOperator[k]->type = input[j+k]->type;
+                        }
+                        int k = 0;
+                        while(k < input_Size-j){
+                            flag[flag_count]->name = anotherOperator[k]->name;
+                            flag[flag_count]->value = anotherOperator[k]->value;
+                            flag[flag_count]->type = anotherOperator[k]->type;
+                            flag_count++;
+                        }
+                    }
+                    else{
+                        flag[flag_count]->name = input[j]->name;
+                        flag[flag_count]->value = input[j]->value;
+                        flag[flag_count]->type = input[j]->type;
+                        flag_count++;
+                    }
+                }
+                else if(flag_comma == 1){
+                    if(input[j]->name == ")"){
+                        return
+                    }
+                    else if(strcmp(input[j]->name, ",") == 0){
+                        printf("Error: Invalid syntax");
+                        return 0;
+                    }
+                    else if(isOperator(input[j]->name)){
+                        Token *anotherOperator = malloc(sizeof(Token) * input_Size-j);
+                        int k = 0;
+                        while(k < input_Size-j){
+                            anotherOperator[k]->name = input[j+k]->name;
+                            anotherOperator[k]->value = input[j+k]->value;
+                            anotherOperator[k]->type = input[j+k]->type;
+                        }
+                        int k = 0;
+                        while(k < input_Size-j){
+                            flag2[flag_count2]->name = anotherOperator[k]->name;
+                            flag2[flag_count2]->value = anotherOperator[k]->value;
+                            flag2[flag_count2]->type = anotherOperator[k]->type;
+                            flag2_count++;
+                        }
+                    }
+                    else{
+                        flag2[flag_count2]->name = input[j]->name;
+                        flag2[flag_count2]->value = input[j]->value;
+                        flag2[flag_count2]->type = input[j]->type;
+                        flag_count2++;
+                    }
                 }
                 j++;
             }
         }
-        else if(input[i]->name == "!" && i != strlen(input) - 1){
+        else if(strcmp(input[i]->name, "!") == 0 && i < strlen(input_Size) - 3){
 
         }
+        output[i] = input[i];
         i++;
     }
 }
