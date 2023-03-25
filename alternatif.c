@@ -36,7 +36,7 @@ int isOperatorName(char* ch) {
     return (strcmp(ch, "xor") == 0 || strcmp(ch, "ls") <= 0 || strcmp(ch, "rs") >= 0 || strcmp(ch, "lr") <= 0 || strcmp(ch, "rr") >= 0 || strcmp(ch, "not") <= 0);
 }
 int isOperator(char *ch) {
-    return strchr("+-*&|", *ch) != NULL;
+    return strchr("+-*&|(),=", *ch) != NULL;
 }
 
 
@@ -53,7 +53,6 @@ Token* tokenizer(char *input) {
     // iterate through the input string, one character at a time
     int i = 0;
     while (i < input_length) {
-        
         // if the current character is a digit, parse it as a number
         if (isdigit(input[i])) {
             // find the end of the number
@@ -99,18 +98,24 @@ Token* tokenizer(char *input) {
                 tokens[num_tokens].name = name;
                 if (strcmp(name, "xor") == 0) {
                     tokens[num_tokens].type = TOKEN_TYPE_XOR;
+                    tokens[num_tokens].name = "^";
                 } else if (strcmp(name, "ls") == 0) {
                     tokens[num_tokens].type = TOKEN_TYPE_LS;
+                    tokens[num_tokens].name = "<";
                 } else if (strcmp(name, "rs") == 0) {
                     tokens[num_tokens].type = TOKEN_TYPE_RS;
+                    tokens[num_tokens].name = ">";
                 } else if (strcmp(name, "lr") == 0) {
                     tokens[num_tokens].type = TOKEN_TYPE_LR;
+                    tokens[num_tokens].name = "$";
                 } else if (strcmp(name, "rr") == 0) {
                     tokens[num_tokens].type = TOKEN_TYPE_RR;
+                    tokens[num_tokens].name = "€";
                 } else if (strcmp(name, "not") == 0) {
                     tokens[num_tokens].type = TOKEN_TYPE_NOT;
+                    tokens[num_tokens].name = "!";
                 }
-            } else {            // add the string as a new token to the array
+            } else {   // if it's a variable, add the string as a new token to the array
             tokens[num_tokens].value = 0;
             tokens[num_tokens].name = name;
             tokens[num_tokens].type = TOKEN_TYPE_IDENTIFIER;
@@ -120,26 +125,52 @@ Token* tokenizer(char *input) {
             // move the index to the end of the string
             i = j;
         
-        } else if (isOperator(&input[i])){
-            char *operator = malloc(sizeof(char) +1);
-            strncpy(operator, &input[i], 1);
-            operator[1] = '\0'; // add null terminator
-            if (strcmp(operator, "+") ==0){
-                printf("plus");
+        // if the current character is an operator, parse it as an operator
+        } else if (isOperator(&input[i])) {
+            char* name = malloc(sizeof(char) * 2);
+            strncpy(name, &input[i], 1);
+            if (input[i] == '+') {
                 tokens[num_tokens].type = TOKEN_TYPE_PLUS;
-            } else if (strcmp(operator, "-") ==0){
+                tokens[num_tokens].name = name;
+                tokens[num_tokens].name[1] = '\0';
+            } else if (input[i] == '-') {
                 tokens[num_tokens].type = TOKEN_TYPE_MINUS;
-            } else if (strcmp(operator, "*") ==0){
+                tokens[num_tokens].name = name;
+                tokens[num_tokens].name[1] = '\0';
+            } else if (input[i] == '*') {
                 tokens[num_tokens].type = TOKEN_TYPE_ASTERISK;
-            } else if (strcmp(operator, "&") ==0){
+                tokens[num_tokens].name = name;
+                tokens[num_tokens].name[1] = '\0';
+            } else if (input[i] == '&') {
                 tokens[num_tokens].type = TOKEN_TYPE_AMPERSAND;
-            } else if (strcmp(operator, "|") ==0){
+                tokens[num_tokens].name = name;
+                tokens[num_tokens].name[1] = '\0';
+            } else if (input[i] == '|') {
                 tokens[num_tokens].type = TOKEN_TYPE_PIPE;
+                tokens[num_tokens].name = name;
+                tokens[num_tokens].name[1] = '\0';
+            } else if (input[i] == '(') {
+                tokens[num_tokens].type = TOKEN_TYPE_OPENPARENTHESIS;
+                tokens[num_tokens].name = name;
+                tokens[num_tokens].name[1] = '\0';
+            } else if (input[i] == ')') {
+                tokens[num_tokens].type = TOKEN_TYPE_CLOSEPARENTHESIS;
+                tokens[num_tokens].name = name;
+                tokens[num_tokens].name[1] = '\0';
+            } else if (input[i] == ',') {
+                tokens[num_tokens].type = TOKEN_TYPE_COMMA;
+                tokens[num_tokens].name = name;
+                tokens[num_tokens].name[1] = '\0';
+            } else if (input[i] == '=') {
+                tokens[num_tokens].type = TOKEN_TYPE_EQUALS;
+                tokens[num_tokens].name = name;
+                tokens[num_tokens].name[1] = '\0';
             }
-            free(operator);
+            tokens[num_tokens].value = 0;
             num_tokens++;
-        }
-        else {
+            i++;
+            } else {
+            printf("Else");
             i++;
         }
     }
@@ -155,13 +186,9 @@ int main() {
     
     Token *tokens = tokenizer(input);
     for (int i = 0; i < strlen(input); i++) {
-        if (tokens[i].name != NULL) {
+    
             printf("Token %d: %s , %u\n", i+1, tokens[i].name, tokens[i].type);
-        } else if (tokens[i].value!=0){
-            printf("Token %d: %d\n", i+1, tokens[i].value);
-        } else{
-            printf("Token %d: %d\n", i+1, tokens[i].type);
-        }
+       
     }
     
     free(tokens);
