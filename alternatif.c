@@ -35,80 +35,11 @@ typedef struct {
 int isOperatorName(char* ch) {
     return (strcmp(ch, "xor") == 0 || strcmp(ch, "ls") <= 0 || strcmp(ch, "rs") >= 0 || strcmp(ch, "lr") <= 0 || strcmp(ch, "rr") >= 0 || strcmp(ch, "not") <= 0);
 }
-
-/*
-Token** tokenizer(char *input, int variable_count, Token* variables) { //tokenizer function
-    Token *token= malloc(MAX_LENGTH * sizeof(Token));  // allocate memory for token array
-    int i = 0;
-    int token_index = 0;
-    char str[MAX_LENGTH];
-    int strlength = 0;
-   // int input_length = strlen(input);
-
-    char *token_str = strtok(input, "");
-    while (token_str != NULL && num_tokens < MAX_TOKENS) {
-        Token *token = &tokens[num_tokens];
-        token->name = malloc(MAX_TOKEN_LEN * sizeof(char));
-        strncpy(token->name, token_str, MAX_TOKEN_LEN);
-        token->value = num_tokens + 1;
-        num_tokens++;
-        token_str = strtok(NULL, " \t\n");
-    }
-    tokens[num_tokens].name = NULL;
-    return tokens;
-    for (i = 0; i < MAX_LENGTH; i++) {
-        if (input[i] == '\0') {
-            break;
-        } else if (input[i] == ' ') {
-            continue;
-        } else if (isalpha(input[i])) {
-            str[strlength] = input[i];
-            strlength++;
-            if (isalpha(input[i + 1]) && (input_length != (i + 1))) {
-                continue;
-            } 
-            
-        } else if (isdigit(input[i])) {
-            str[strlength] = input[i];
-            strlength++;
-            if (isdigit(input[i + 1]) && (input_length != (i + 1))) {
-                continue;
-            } else {
-                token[token_index]->type = TOKEN_TYPE_NUMBER;
-                token[token_index]->name = atoi(str);
-                token[token_index]->value = atoi(str);
-                token_index++;
-                str = NULL;
-                strlength = 0;
-            }
-        } else { //if not, give an error
-                printf("Error!");
-            }
-        
-    }
-    return *token;
+int isOperator(char *ch) {
+    return strchr("+-*&|", *ch) != NULL;
 }
 
 
-int main() {
-    char input[MAX_LENGTH] = "a = 1 + 2";
-    Token *variables[MAX_LENGTH];
-    int variable_count = 0;
-}
-
-
-
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-
-typedef struct {
-    int value;
-    char* name;
-} Token;
-*/
 Token* tokenizer(char *input) {
     // get the length of the input string
     int input_length = strlen(input);
@@ -189,8 +120,25 @@ Token* tokenizer(char *input) {
             // move the index to the end of the string
             i = j;
         
-        // if the current character is not a letter or digit, ignore it
-        } //else if (isOperator(index[i])){}
+        } else if (isOperator(&input[i])){
+            char *operator = malloc(sizeof(char) +1);
+            strncpy(operator, &input[i], 1);
+            operator[1] = '\0'; // add null terminator
+            if (strcmp(operator, "+") ==0){
+                printf("plus");
+                tokens[num_tokens].type = TOKEN_TYPE_PLUS;
+            } else if (strcmp(operator, "-") ==0){
+                tokens[num_tokens].type = TOKEN_TYPE_MINUS;
+            } else if (strcmp(operator, "*") ==0){
+                tokens[num_tokens].type = TOKEN_TYPE_ASTERISK;
+            } else if (strcmp(operator, "&") ==0){
+                tokens[num_tokens].type = TOKEN_TYPE_AMPERSAND;
+            } else if (strcmp(operator, "|") ==0){
+                tokens[num_tokens].type = TOKEN_TYPE_PIPE;
+            }
+            free(operator);
+            num_tokens++;
+        }
         else {
             i++;
         }
@@ -208,9 +156,11 @@ int main() {
     Token *tokens = tokenizer(input);
     for (int i = 0; i < strlen(input); i++) {
         if (tokens[i].name != NULL) {
-            printf("Token %d: %s\n", i+1, tokens[i].name);
-        } else {
+            printf("Token %d: %s , %u\n", i+1, tokens[i].name, tokens[i].type);
+        } else if (tokens[i].value!=0){
             printf("Token %d: %d\n", i+1, tokens[i].value);
+        } else{
+            printf("Token %d: %d\n", i+1, tokens[i].type);
         }
     }
     
