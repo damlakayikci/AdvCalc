@@ -3,34 +3,11 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include "token.h"
 
 #define MAX_LENGTH 256
 
-typedef enum {
-    TOKEN_TYPE_NUMBER,
-    TOKEN_TYPE_PLUS,
-    TOKEN_TYPE_MINUS,
-    TOKEN_TYPE_ASTERISK,
-    TOKEN_TYPE_AMPERSAND,
-    TOKEN_TYPE_PIPE,
-    TOKEN_TYPE_XOR,
-    TOKEN_TYPE_LS,
-    TOKEN_TYPE_RS,
-    TOKEN_TYPE_LR,
-    TOKEN_TYPE_RR,
-    TOKEN_TYPE_NOT,
-    TOKEN_TYPE_OPENPARENTHESIS,
-    TOKEN_TYPE_CLOSEPARENTHESIS,
-    TOKEN_TYPE_COMMA,
-    TOKEN_TYPE_IDENTIFIER,
-    TOKEN_TYPE_EQUALS,
-} TokenType;
 
-typedef struct {
-    TokenType type;
-    int value;
-    char *name;
-} Token;
 
 int isOperatorName(char *ch) {
     return (strcmp(ch, "xor") == 0 || strcmp(ch, "ls") == 0 || strcmp(ch, "rs") == 0 || strcmp(ch, "lr") == 0 ||
@@ -42,7 +19,7 @@ int isOperator(char *ch) {
 }
 
 
-Token *tokenizer(char *input, int *num_tokens) {
+Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variables) {
     // get the length of the input string
     int input_length = strlen(input);
 
@@ -119,6 +96,10 @@ Token *tokenizer(char *input, int *num_tokens) {
                 tokens[*num_tokens].value = 0;
                 tokens[*num_tokens].name = name;
                 tokens[*num_tokens].type = TOKEN_TYPE_IDENTIFIER;
+                variables[*num_variables].value = 0;
+                variables[*num_variables].name = name;
+                variables[*num_variables].type = TOKEN_TYPE_IDENTIFIER;
+                (*num_variables)++;
             }
             (*num_tokens)++;
 
@@ -164,15 +145,20 @@ Token *tokenizer(char *input, int *num_tokens) {
 
 int main() {
     int num_tokens = 0;
+    int num_variables = 0;
+    Token *variables = malloc(sizeof(Token) * 256);
     char input[256];
     printf("Enter input string: ");
     fgets(input, 256, stdin);
-    Token *tokens = tokenizer(input, &num_tokens);
-    for (int i = 0; i < strlen(input); i++) {
+    Token *tokens = tokenizer(input, &num_tokens, variables, &num_variables);
+    for (int i = 0; i < num_tokens; i++) {
         printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, tokens[i].name, tokens[i].type,
                tokens[i].value);
     }
-    printf("Number of tokens: %d\n", num_tokens);
+    for (int i = 0; i < num_variables; i++) {
+         printf("Variable %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, variables[i].name, variables[i].type,
+               variables[i].value);
+        }
     free(tokens);
     return 0;
 }
