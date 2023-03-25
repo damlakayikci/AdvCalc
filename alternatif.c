@@ -83,7 +83,7 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
                     tokens[*num_tokens].name = "$";
                 } else if (strcmp(name, "rr") == 0) {
                     tokens[*num_tokens].type = TOKEN_TYPE_RR;
-                    tokens[*num_tokens].name = "€";
+                    tokens[*num_tokens].name = "#";
                 } else if (strcmp(name, "not") == 0) {
                     tokens[*num_tokens].type = TOKEN_TYPE_NOT;
                     tokens[*num_tokens].name = "!";

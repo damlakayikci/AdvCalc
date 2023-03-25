@@ -107,7 +107,7 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
                     tokens[*num_tokens].name = "$";
                 } else if (strcmp(name, "rr") == 0) {
                     tokens[*num_tokens].type = TOKEN_TYPE_RR;
-                    tokens[*num_tokens].name = "€";
+                    tokens[*num_tokens].name = "#";
                 } else if (strcmp(name, "not") == 0) {
                     tokens[*num_tokens].type = TOKEN_TYPE_NOT;
                     tokens[*num_tokens].name = "!";
@@ -194,7 +194,7 @@ Token *formatController(Token *input, int inputSize, int recursive){
                     parenthesisCount--;
                     j++;
                 }else if(isFunctionOperator(input[i+j].name)){     //if it is a function operator
-                    Token *anotherFunctionOperator = malloc(sizeof(Token) * inputSize-i-j);   //create a new array for the tokens for the recursive call
+                    Token *anotherFunctionOperator = malloc(sizeof(Token) * (inputSize-i));   //create a new array for the tokens for the recursive call
                     int k = 0;
                     while(k < inputSize-i-j){       //copy the tokens to another array
                         anotherFunctionOperator[k].type = input[i+j+k].type;
