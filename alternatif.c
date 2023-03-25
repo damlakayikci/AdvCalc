@@ -116,7 +116,7 @@ Token *tokenizer(char *input) {
                     tokens[num_tokens].name = "!";
                 }
             } else {   // if it's a variable, add the string as a new token to the array
-                tokens[num_tokens].value = 9999999;
+                tokens[num_tokens].value = 0;
                 tokens[num_tokens].name = name;
                 tokens[num_tokens].type = TOKEN_TYPE_IDENTIFIER;
             }
@@ -165,8 +165,7 @@ Token *tokenizer(char *input) {
 int main() {
     char input[256];
     printf("Enter input string: ");
-    scanf("%s", input);
-
+    fgets(input, 256, stdin);
     Token *tokens = tokenizer(input);
     for (int i = 0; i < strlen(input); i++) {
 
