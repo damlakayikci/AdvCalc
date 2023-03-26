@@ -12,7 +12,7 @@ int isOperatorName(char *ch) {
             strcmp(ch, "rr") == 0 || strcmp(ch, "not") == 0);
 }
 
-int isOperator(char *ch) {
+int isSymbol(char *ch) {
     return strchr("+-*&|(),=", *ch) != NULL;
 }
 
@@ -20,6 +20,12 @@ int isOperator(char *ch) {
 Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variables) {
     // get the length of the input string
     int input_length = strlen(input);
+    if (input[0] == '%') {
+            printf("\n");
+            Token *tokens = malloc( sizeof(Token));
+            tokens[0].name = "Comment_line";
+            return tokens;
+        }
 
     // allocate memory for the array of tokens
     Token *tokens = malloc(sizeof(Token) * input_length);
@@ -102,7 +108,7 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
             i = j;
 
             // if the current character is an operator, parse it as an operator
-        } else if (isOperator(&input[i])) {
+        } else if (isSymbol(&input[i])) {
             char *name = malloc(sizeof(char) * 2);
             strncpy(name, &input[i], 1);
             if (input[i] == '+') {
@@ -129,8 +135,11 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
             tokens[*num_tokens].value = 0;
             (*num_tokens)++;
             i++;
-        } else {
+        } else if (isspace(input[i])) {
             i++;
+        }  else {
+            printf("Error: Invalid character\n");
+            return NULL;
         }
     }
 
@@ -147,13 +156,17 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
     Token *output = malloc(sizeof(Token) * inputSize);
     int recIndex;
     int nonRecIndex;
+    if ((inputSize >= 2) && (input[1].type == TOKEN_TYPE_EQUALS) && (input[0].type != TOKEN_TYPE_IDENTIFIER)) {
+        printf("Error: Equal sign\n");
+        return NULL;
+    }
     while ((*index) < inputSize) {       //for each token
         // for repeated tokens return NULL
-        if ((input[(*index)].type == TOKEN_TYPE_IDENTIFIER && input[(*index) + 1].type == TOKEN_TYPE_IDENTIFIER) ||
-            (input[(*index)].type == TOKEN_TYPE_NUMBER && input[(*index) + 1].type == TOKEN_TYPE_NUMBER)
-                ) {
+        if (input[(*index)].type == TOKEN_TYPE_IDENTIFIER && input[(*index) + 1].type == TOKEN_TYPE_IDENTIFIER) {
+            printf("Error: Repeated identifier\n");
             return NULL;
         }
+
 
         int parenthesisCount = 0;       //count the parenthesis
         if (isFunctionOperator(input[(*index)].name)) {     //if it is a function operator
@@ -195,6 +208,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
                     (*index) += j;
                     Token *inner = formatController(input, inputSize, 1, index, output_count);
                     if (inner == NULL) {
+                        printf("Error: Inner function operator\n");
                         return NULL;
                     }
                     (*index) -= j;
@@ -259,14 +273,14 @@ int main() {
 
 
     // controller
-    // for (int i = 0; i < num_tokens; i++) {
-    //     printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, tokens[i].name, tokens[i].type,
-    //            tokens[i].value);
-    // }
-    // for (int i = 0; i < num_variables; i++) {
-    //     printf("Variable %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, variables[i].name, variables[i].type,
-    //            variables[i].value);
-    // }
+    for (int i = 0; i < num_tokens; i++) {
+        printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, tokens[i].name, tokens[i].type,
+               tokens[i].value);
+    }
+    for (int i = 0; i < num_variables; i++) {
+        printf("Variable %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, variables[i].name, variables[i].type,
+               variables[i].value);
+    }
     // end controller
     Token *output = formatController(tokens, num_tokens, 0, &index, &output_count);
     int i = 0;
