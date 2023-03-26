@@ -272,7 +272,7 @@ int main() {
     Token *tokens = tokenizer(input, &num_tokens, variables, &num_variables);
 
 
-    // controller
+    // CONTROLLER
     for (int i = 0; i < num_tokens; i++) {
         printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, tokens[i].name, tokens[i].type,
                tokens[i].value);
@@ -281,20 +281,26 @@ int main() {
         printf("Variable %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, variables[i].name, variables[i].type,
                variables[i].value);
     }
-    // end controller
+    // END OF CONTROLLER
+
+
     Token *output = formatController(tokens, num_tokens, 0, &index, &output_count);
-    int i = 0;
+    
     if (output == NULL) {
         printf("Error!\n");
         return 0;
-    } else {
+    } 
+    // CONTROLLER
+    else {
+        int i = 0;
         while (i < num_tokens) {
-            if (output[i].name != NULL)
+            //if (output[i].name != NULL)
                 printf("OUTPUT %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, output[i].name, output[i].type,
                        output[i].value);
             i++;
         }
-    }
+    } 
+    // END OF CONTROLLER
 
     free(tokens);
     return 0;
