@@ -148,6 +148,13 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
     int recIndex;
     int nonRecIndex;
     while ((*index) < inputSize) {       //for each token
+        // for repeated tokens return NULL
+        if ((input[(*index)].type == TOKEN_TYPE_IDENTIFIER && input[(*index) + 1].type == TOKEN_TYPE_IDENTIFIER) ||
+            (input[(*index)].type == TOKEN_TYPE_NUMBER && input[(*index) + 1].type == TOKEN_TYPE_NUMBER)
+                ) {
+            return NULL;
+        }
+
         int parenthesisCount = 0;       //count the parenthesis
         if (isFunctionOperator(input[(*index)].name)) {     //if it is a function operator
             if (strcmp(input[(*index) + 1].name, "(") == 0) {   //if next is an open parenthesis
@@ -224,18 +231,6 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
             (*index) += j;    //skip the tokens that are already processed
             if (recursive == 1) {   //if it is a recursive call, return the output
                 return output;
-            }
-        } else if (strcmp(input[(*index)].name, "!") == 0){
-
-          // NOT
-          if (strcmp(input[(*index) + 1].name, "(") == 0) {   //if next is an open parenthesis
-                output[(*index) + 1].type = TOKEN_TYPE_OPENPARENTHESIS;   //add it to the output
-                output[(*index) + 1].name = "(";
-                (*output_count)++;    //increase the output count
-                parenthesisCount++;
-            } else { // BURASI CALISIYOR
-                printf("Error: Expected open parenthesis after function operator\n");
-                return NULL;
             }
 
         } else if (strcmp(input[(*index)].name, ",") == 0) {
