@@ -161,11 +161,11 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
             }
             if (recursive) {
                 recIndex = *index;
-
             } else {
                 nonRecIndex = *index;
             }
             int j = 2;
+            int commaCount = 0;
             while (parenthesisCount != 0) {   //while the parenthesis are not closed
                 if ((*index) + j == inputSize) {    //if the end of the input is reached
                     printf("Error: Parenthesis not closed\n");
@@ -187,16 +187,16 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
                 } else if (isFunctionOperator(input[(*index) + j].name)) {     //if it is a function operator
                     (*index) += j;
                     Token *inner = formatController(input, inputSize, 1, index, output_count);
+                    if (inner == NULL) {
+                        return NULL;
+                    }
                     (*index) -= j;
-
-
 //xor(xor(a,b),c)
                     for (int k = 0; k < inputSize; k++) {
                         if (inner[k].name != NULL) {
                             output[k] = inner[k];
                         }
                     }
-
                 } else if (strcmp(input[(*index) + j].name, ",") == 0) {    //if it is a comma
                     if (recursive) {
                         output[(*index) + j].type = input[recIndex].type;   //insert the operator to the output
@@ -205,7 +205,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
                         output[(*index) + j].type = input[nonRecIndex].type;   //insert the operator to the output
                         output[(*index) + j].name = input[nonRecIndex].name;
                     }
-
+                    commaCount++;
                     (*output_count)++;   //increase the output count
                     //change the stage
                     j++;
@@ -217,10 +217,27 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
                     j++;
                 }
             }
+            if (commaCount != 1) {   //if there is not 1 comma inside expression
+                printf("Error: Non-expected number of commas\n");
+                return NULL;
+            }
             (*index) += j;    //skip the tokens that are already processed
             if (recursive == 1) {   //if it is a recursive call, return the output
                 return output;
             }
+        } else if (strcmp(input[(*index)].name, "!") == 0){
+
+          // NOT
+          if (strcmp(input[(*index) + 1].name, "(") == 0) {   //if next is an open parenthesis
+                output[(*index) + 1].type = TOKEN_TYPE_OPENPARENTHESIS;   //add it to the output
+                output[(*index) + 1].name = "(";
+                (*output_count)++;    //increase the output count
+                parenthesisCount++;
+            } else { // BURASI CALISIYOR
+                printf("Error: Expected open parenthesis after function operator\n");
+                return NULL;
+            }
+
         } else if (strcmp(input[(*index)].name, ",") == 0) {
             printf("Error: Unexpected comma\n");
             return NULL;
