@@ -1,4 +1,5 @@
 typedef enum {
+    TOKEN_TYPE_EMPTY,
     TOKEN_TYPE_NUMBER,
     TOKEN_TYPE_PLUS,
     TOKEN_TYPE_MINUS,

@@ -10,6 +10,26 @@ int isFunctionOperator(char *ch) {
     return (strcmp(ch, "^") == 0 || strcmp(ch, "<") == 0 || strcmp(ch, ">") == 0 || strcmp(ch, "$") == 0 ||
             strcmp(ch, "#") == 0);
 }
+int shouldntRepeat(char *ch) {
+    return strchr("+-*&|,=", *ch) != NULL;
+}
+// int isExpression (Token *input, int parenthesisCount, int index){
+//     if (input[index].type == TOKEN_TYPE_OPENPARENTHESIS){
+//         parenthesisCount++;
+//         isExpression(input, parenthesisCount, ++index);
+//     }
+//     else if (input[index].type == TOKEN_TYPE_CLOSEPARENTHESIS){
+//         parenthesisCount--;
+//         index++;
+//     }
+//     if (parenthesisCount == 0){
+//         return 1;
+//     }
+//     return 0;
+
+
+// }
+
 
 Token *formatController(Token *input, int inputSize, int recursive, int *index, int *output_count) {
     Token *output = malloc(sizeof(Token) * inputSize);
@@ -23,6 +43,12 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
         // for repeated tokens return NULL
         if (input[(*index)].type == TOKEN_TYPE_IDENTIFIER && input[(*index) + 1].type == TOKEN_TYPE_IDENTIFIER) {
             printf("Error: Repeated identifier\n");
+            return NULL;
+        } if (input[(*index)].type == TOKEN_TYPE_NUMBER && input[(*index) + 1].type == TOKEN_TYPE_NUMBER) {
+            printf("Error: Repeated number\n");
+            return NULL;
+        } if (shouldntRepeat(input[(*index)].name) && shouldntRepeat(input[(*index) + 1].name)) {
+            printf("Error: Repeated symbol\n");
             return NULL;
         }
 

@@ -138,7 +138,7 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
         } else if (isspace(input[i])) {
             i++;
         }  else {
-            printf("Error: Invalid character\n");
+            printf("Error: Invalid character%c\n", input[i]);
             return NULL;
         }
     }
