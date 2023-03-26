@@ -10,6 +10,7 @@ int isFunctionOperator(char *ch) {
     return (strcmp(ch, "^") == 0 || strcmp(ch, "<") == 0 || strcmp(ch, ">") == 0 || strcmp(ch, "$") == 0 ||
             strcmp(ch, "#") == 0);
 }
+
 int shouldntRepeat(char *ch) {
     return strchr("+-*&|,=", *ch) != NULL;
 }
@@ -44,10 +45,12 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
         if (input[(*index)].type == TOKEN_TYPE_IDENTIFIER && input[(*index) + 1].type == TOKEN_TYPE_IDENTIFIER) {
             printf("Error: Repeated identifier\n");
             return NULL;
-        } if (input[(*index)].type == TOKEN_TYPE_NUMBER && input[(*index) + 1].type == TOKEN_TYPE_NUMBER) {
+        }
+        if (input[(*index)].type == TOKEN_TYPE_NUMBER && input[(*index) + 1].type == TOKEN_TYPE_NUMBER) {
             printf("Error: Repeated number\n");
             return NULL;
-        } if (shouldntRepeat(input[(*index)].name) && shouldntRepeat(input[(*index) + 1].name)) {
+        }
+        if (shouldntRepeat(input[(*index)].name) && shouldntRepeat(input[(*index) + 1].name)) {
             printf("Error: Repeated symbol\n");
             return NULL;
         }
@@ -107,19 +110,22 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
                     if (recursive) {
                         output[(*index) + j].type = input[recIndex].type;   //insert the operator to the output
                         output[(*index) + j].name = input[recIndex].name;
+                        output[(*index) + j].value = input[recIndex].value;
+
                     } else {
                         output[(*index) + j].type = input[nonRecIndex].type;   //insert the operator to the output
                         output[(*index) + j].name = input[nonRecIndex].name;
+                        output[(*index) + j].value = input[nonRecIndex].value;
+
                     }
                     commaCount++;
                     (*output_count)++;   //increase the output count
                     //change the stage
                     j++;
                 } else {
-                    output[(*index) + j].type = input[(*index) +
-                                                      j].type;   //if it is not a function operator, add it to the output
+                    output[(*index) + j].type = input[(*index) + j].type;
                     output[(*index) + j].name = input[(*index) + j].name;
-                    output[(*index) + j].value = input[(*index) + j].value;   //if it is not a function operator, add it to the output
+                    output[(*index) + j].value = input[(*index) + j].value;
                     (*output_count)++;   //increase the output count
                     j++;
                 }
@@ -139,6 +145,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
         } else {
             output[(*index)].type = input[(*index)].type;   //if it is not a function operator, add it to the output
             output[(*index)].name = input[(*index)].name;
+            output[(*index)].value = input[(*index)].value;
             (*output_count)++;  //increase the output count
             (*index)++;
         }
