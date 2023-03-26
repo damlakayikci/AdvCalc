@@ -65,7 +65,6 @@ Token *infixToPostfix(Token *infix, int infixSize)
     Token *postfix = malloc(sizeof(Token) * (infixSize));
     TokenStack stack;
     stack.top = -1;
-    int top = -1;
 
     for (i = 0, j = 0; i < infixSize; i++) {
         // If the scanned character is operand
@@ -85,20 +84,20 @@ Token *infixToPostfix(Token *infix, int infixSize)
             // pop the stack and add it to the
             // output string until empty or '(' found
         else if (strcmp(infix[i].name, ")") == 0) {
-            while (top > -1 && strcmp(peek(&stack).name, "(") != 0) {
+            while (stack.top > -1 && strcmp(peek(&stack).name, "(") != 0) {
                 pop(&stack, &postfix[j++]);
             }
-            if (top > -1 && strcmp(peek(&stack).name, "(") != 0) {
+            if (stack.top > -1 && strcmp(peek(&stack).name, "(") != 0) {
                 printf("Invalid Expression");
                 return 0;
             }else
-                top--;
+                stack.top--;
         }
 
             // If the scanned character is an operator
             // push it in the stack
         else if (isOperator(infix[i].name)) {
-            while (top > -1 && precedence(peek(&stack).name) >= precedence(infix[i].name)) {
+            while (stack.top > -1 && precedence(peek(&stack).name) >= precedence(infix[i].name)) {
                 pop(&stack, &postfix[j++]);
             }
             push(&stack, infix[i]);
@@ -108,7 +107,7 @@ Token *infixToPostfix(Token *infix, int infixSize)
     }
 
     // Pop all remaining elements from the stack
-    while (top > -1) {
+    while (stack.top > -1) {
         if (strcmp(peek(&stack).name, "(") == 0) {
             printf("Invalid Expression");
             return 0;
