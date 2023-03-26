@@ -143,38 +143,26 @@ int main() {
                variables[i].value);
     }
     // end controller
-//    Token *output = formatController(tokens, num_tokens, 0, &index, &output_count);
-    Token *postfix = infixToPostfix(tokens, num_tokens);
-    for (int i = 0; i < num_tokens; i++) {
-        printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, postfix[i].name, postfix[i].type,
-               postfix[i].value);
+    Token *output = formatController(tokens, num_tokens, 0, &index, &output_count);
+    int i = 0;
+    if (output == NULL) {
+        printf("Error!\n");
+        return 0;
+    } else {
+        while (i < num_tokens) {
+            if (output[i].name != NULL) {
+                num_tokens_formatcontroller++;
+                printf("OUTPUT %d: Name: %s \n", i + 1, output[i].name);
+            }
+            i++;
+        }
     }
-//    int i = 0;
-//    if (output == NULL) {
-//        printf("Error!\n");
-//        return 0;
-//    } else {
-//        while (i < num_tokens) {
-//            if (output[i].name != NULL) {
-//                printf("OUTPUT %d: Name: %s", i + 1, output[i].name);
-//                printf("ali");
-//            }
-//            i++;
-//        }
-//    }
-//    Token *postfix = infixToPostfix(output, num_tokens);
-//    i=0;
-//    while (i < num_tokens) {
-//        if (postfix[i].name != NULL) {
-//            num_tokens_formatcontroller++;
-//            printf("OUTPUT %d: Name: %s", i + 1, output[i].name);
-//        }
-//        i++;
-//    }
-//    for (int j = 0; j < num_tokens_formatcontroller; j++) {
-//        printf("Postfix %d: Name: %s\t\t Type: %u\t\t Value: %d\n", j + 1, postfix[j].name, postfix[j].type,
-//               postfix[j].value);
-//    }
+    Token *postfix = infixToPostfix(output, num_tokens_formatcontroller);
+
+    for (int j = 0; j < num_tokens_formatcontroller; j++) {
+        printf("Postfix %d: Name: %s\t\t Type: %u\t\t Value: %d\n", j + 1, postfix[j].name, postfix[j].type,
+               postfix[j].value);
+    }
     free(tokens);
     free(postfix);
 
