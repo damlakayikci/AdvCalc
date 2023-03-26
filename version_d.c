@@ -143,92 +143,92 @@ int isFunctionOperator(char *ch) {
             strcmp(ch, "#") == 0);
 }
 
-Token *formatController(Token *input, int inputSize, int recursive) {
-    int i = 0;
-    int output_count = 0;      //count the output tokens
+Token *formatController(Token *input, int inputSize, int recursive, int *index, int *output_count) {
     Token *output = malloc(sizeof(Token) * inputSize);
-    while (i < inputSize) {       //for each token
+    int recIndex;
+    int nonRecIndex;
+    while ((*index) < inputSize) {       //for each token
         int parenthesisCount = 0;       //count the parenthesis
-        if (isFunctionOperator(input[i].name)) {     //if it is a function operator
-            if (strcmp(input[i + 1].name, "(") == 0) {   //if next is an open parenthesis
-                output[i + 1].type = TOKEN_TYPE_OPENPARENTHESIS;   //add it to the output
-                output[i + 1].name = "(";
-                output_count++;    //increase the output count
+        if (isFunctionOperator(input[(*index)].name)) {     //if it is a function operator
+            if (strcmp(input[(*index) + 1].name, "(") == 0) {   //if next is an open parenthesis
+                output[(*index) + 1].type = TOKEN_TYPE_OPENPARENTHESIS;   //add it to the output
+                output[(*index) + 1].name = "(";
+                (*output_count)++;    //increase the output count
                 parenthesisCount++;
             } else { // BURASI CALISIYOR
                 printf("Error: Expected open parenthesis after function operator\n");
                 return NULL;
             }
+            if (recursive) {
+                recIndex = *index;
+
+            } else {
+                nonRecIndex = *index;
+            }
             int j = 2;
             while (parenthesisCount != 0) {   //while the parenthesis are not closed
-                if (i + j == inputSize) {    //if the end of the input is reached
+                if ((*index) + j == inputSize) {    //if the end of the input is reached
                     printf("Error: Parenthesis not closed\n");
                     return NULL;
-                } else if (input[i + j].type == TOKEN_TYPE_OPENPARENTHESIS) {       //if it is an open parenthesis
-                    output[i + j].type = TOKEN_TYPE_OPENPARENTHESIS;   //add it to the output
-                    output[i + j].name = "(";
-                    output_count++;    //increase the output count
+                } else if (input[(*index) + j].type ==
+                           TOKEN_TYPE_OPENPARENTHESIS) {       //if it is an open parenthesis
+                    output[(*index) + j].type = TOKEN_TYPE_OPENPARENTHESIS;   //add it to the output
+                    output[(*index) + j].name = "(";
+                    (*output_count)++;    //increase the output count
                     parenthesisCount++;
                     j++;
-                } else if (input[i + j].type == TOKEN_TYPE_CLOSEPARENTHESIS) {      //if it is a close parenthesis
-                    output[i + j].type = TOKEN_TYPE_CLOSEPARENTHESIS;    //add it to the output
-                    output[i + j].name = ")";
-                    output_count++;   //increase the output count
+                } else if (input[(*index) + j].type ==
+                           TOKEN_TYPE_CLOSEPARENTHESIS) {      //if it is a close parenthesis
+                    output[(*index) + j].type = TOKEN_TYPE_CLOSEPARENTHESIS;    //add it to the output
+                    output[(*index) + j].name = ")";
+                    (*output_count)++;   //increase the output count
                     parenthesisCount--;
                     j++;
-                 } 
-                 
-                 
-                 else if (isFunctionOperator(input[i + j].name)) {     //if it is a function operator
-                    Token *anotherFunctionOperator = malloc(sizeof(Token) * (inputSize - i - j));   //create a new array for the tokens for the recursive call
-                    int k = 0;
-                    while (k < inputSize - i - j) {       //copy the tokens to another array
-                        anotherFunctionOperator[k].type = input[i + j + k].type;
-                        anotherFunctionOperator[k].name = input[i + j + k].name;
-                        k++;
+                } else if (isFunctionOperator(input[(*index) + j].name)) {     //if it is a function operator
+                    (*index) += j;
+                    Token *inner = formatController(input, inputSize, 1, index, output_count);
+                    (*index) -= j;
+
+
+//xor(xor(a,b),c)
+                    for (int k = 0; k < inputSize; k++) {
+                        if (inner[k].name != NULL) {
+                            output[k] = inner[k];
+                        }
                     }
-                    Token *anotherOutput = formatController(anotherFunctionOperator, inputSize - i - j, 1);   //recursive call
-                    int l = 0;
-                    while (anotherOutput[l].name != NULL) {    //count the number of the tokens in the output of the recursive call
-                        l++;
+
+                } else if (strcmp(input[(*index) + j].name, ",") == 0) {    //if it is a comma
+                    if (recursive) {
+                        output[(*index) + j].type = input[recIndex].type;   //insert the operator to the output
+                        output[(*index) + j].name = input[recIndex].name;
+                    } else {
+                        output[(*index) + j].type = input[nonRecIndex].type;   //insert the operator to the output
+                        output[(*index) + j].name = input[nonRecIndex].name;
                     }
-                    int m = 0;
-                    while (m < l) {   //copy the tokens to the output
-                        output[i + j + m].type = anotherOutput[m].type;
-                        output[i + j + m].name = anotherOutput[m].name;
-                        output_count++;   //increase the output count
-                        m++;
-                    }
-                    j += l;   //skip the tokens that are already processed
-                } 
-                
-                
-                
-                else if (strcmp(input[i + j].name, ",") == 0) {    //if it is a comma
-                    output[i + j].type = input[i].type;   //insert the operator to the output
-                    output[i + j].name = input[i].name;
-                    output_count++;   //increase the output count
+
+                    (*output_count)++;   //increase the output count
                     //change the stage
                     j++;
                 } else {
-                    output[i + j].type = input[i + j].type;   //if it is not a function operator, add it to the output
-                    output[i + j].name = input[i + j].name;
-                    output_count++;   //increase the output count
+                    output[(*index) + j].type = input[(*index) +
+                                                      j].type;   //if it is not a function operator, add it to the output
+                    output[(*index) + j].name = input[(*index) + j].name;
+                    (*output_count)++;   //increase the output count
                     j++;
                 }
             }
-            i += j;    //skip the tokens that are already processed
+            (*index) += j;    //skip the tokens that are already processed
             if (recursive == 1) {   //if it is a recursive call, return the output
                 return output;
             }
-        } else if (strcmp(input[i].name, ",") == 0) {
+        } else if (strcmp(input[(*index)].name, ",") == 0) {
             printf("Error: Unexpected comma\n");
             return NULL;
         } else {
-            output[i].type = input[i].type;   //if it is not a function operator, add it to the output
-            output[i].name = input[i].name;
-            output_count++;  //increase the output count
-            i++;
+            output[(*index)].type = input[(*index)].type;   //if it is not a function operator, add it to the output
+            output[(*index)].name = input[(*index)].name;
+            (*output_count)++;  //increase the output count
+            (*index)++;
         }
     }
     return output;
@@ -237,6 +237,8 @@ Token *formatController(Token *input, int inputSize, int recursive) {
 int main() {
     int num_tokens = 0;
     int num_variables = 0;
+    int output_count = 0;
+    int index = 0;
     Token *variables = malloc(sizeof(Token) * 256);
     char input[256];
     printf("Enter input string: ");
@@ -245,25 +247,25 @@ int main() {
 
 
     // controller
-    for (int i = 0; i < num_tokens; i++) {
-        printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, tokens[i].name, tokens[i].type,
-               tokens[i].value);
-    }
-    for (int i = 0; i < num_variables; i++) {
-        printf("Variable %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, variables[i].name, variables[i].type,
-               variables[i].value);
-    }
+    // for (int i = 0; i < num_tokens; i++) {
+    //     printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, tokens[i].name, tokens[i].type,
+    //            tokens[i].value);
+    // }
+    // for (int i = 0; i < num_variables; i++) {
+    //     printf("Variable %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, variables[i].name, variables[i].type,
+    //            variables[i].value);
+    // }
     // end controller
-
-    Token *output = formatController(tokens, num_tokens, 0);
+    Token *output = formatController(tokens, num_tokens, 0, &index, &output_count);
     int i = 0;
     if (output == NULL) {
         printf("Error!\n");
         return 0;
     } else {
-        while (i<num_tokens) {
-          if ( output[i].name != NULL)
-            printf("OUTPUT %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, output[i].name, output[i].type,output[i].value);
+        while (i < num_tokens) {
+            if (output[i].name != NULL)
+                printf("OUTPUT %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, output[i].name, output[i].type,
+                       output[i].value);
             i++;
         }
     }
