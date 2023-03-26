@@ -40,21 +40,29 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
         printf("Error: Equal sign\n");
         return NULL;
     }
+    if (!recursive) { // Initial check
+        for (int d =0; d<inputSize;d++) {       //for each token
+            // for repeated tokens return NULL
+            if (input[d].type == TOKEN_TYPE_IDENTIFIER && input[d + 1].type == TOKEN_TYPE_IDENTIFIER) {
+                printf("Error: Repeated identifier\n");
+                return NULL;
+            }
+            if (input[d].type == TOKEN_TYPE_NUMBER && input[d + 1].type == TOKEN_TYPE_NUMBER) {
+                printf("Error: Repeated number\n");
+                return NULL;
+            }
+            if (shouldntRepeat(input[d].name) && shouldntRepeat(input[d+ 1].name)) {
+                printf("Error: Repeated symbol\n");
+                return NULL;
+            }
+            // empty paranthesis
+            if (input[d].type == TOKEN_TYPE_OPENPARENTHESIS && input[d + 1].type == TOKEN_TYPE_CLOSEPARENTHESIS) {
+                printf("Error: Empty parenthesis\n");
+                return NULL;
+            }
+        }
+    }
     while ((*index) < inputSize) {       //for each token
-        // for repeated tokens return NULL
-        if (input[(*index)].type == TOKEN_TYPE_IDENTIFIER && input[(*index) + 1].type == TOKEN_TYPE_IDENTIFIER) {
-            printf("Error: Repeated identifier\n");
-            return NULL;
-        }
-        if (input[(*index)].type == TOKEN_TYPE_NUMBER && input[(*index) + 1].type == TOKEN_TYPE_NUMBER) {
-            printf("Error: Repeated number\n");
-            return NULL;
-        }
-        if (shouldntRepeat(input[(*index)].name) && shouldntRepeat(input[(*index) + 1].name)) {
-            printf("Error: Repeated symbol\n");
-            return NULL;
-        }
-
 
         int parenthesisCount = 0;       //count the parenthesis
         if (isFunctionOperator(input[(*index)].name)) {     //if it is a function operator
