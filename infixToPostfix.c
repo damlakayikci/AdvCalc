@@ -358,12 +358,13 @@ int main() {
     int num_variables = 0;
     int output_count = 0;
     int index = 0;
-    int num_tokens_formatcontroller = 0; //for infix to postfix conversion
+    int num_tokens_formatcontroller = 0;
     Token *variables = malloc(sizeof(Token) * 256);
     char input[256];
     printf("Enter input string: ");
     fgets(input, 256, stdin);
     Token *tokens = tokenizer(input, &num_tokens, variables, &num_variables);
+
 
     // controller
     for (int i = 0; i < num_tokens; i++) {
@@ -383,8 +384,7 @@ int main() {
     } else {
         while (i < num_tokens) {
             if (output[i].name != NULL)
-                printf( "%s", output[i].name);
-            num_tokens_formatcontroller++;
+                printf("%s", output[i].name);
             i++;
         }
         while (i < num_tokens) {
@@ -394,6 +394,14 @@ int main() {
         }
     }
     Token *postfix = infixToPostfix(output, num_tokens_formatcontroller);
+    i=0;
+    while (i < num_tokens) {
+        if (postfix[i].name != NULL) {
+            num_tokens_formatcontroller++;
+            printf("OUTPUT %d: Name: %s", i + 1, output[i].name);
+        }
+        i++;
+    }
     for (int j = 0; j < num_tokens_formatcontroller; j++) {
         printf("Postfix %d: Name: %s\t\t Type: %u\t\t Value: %d\n", j + 1, postfix[j].name, postfix[j].type,
                postfix[j].value);
