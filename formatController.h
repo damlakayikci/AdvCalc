@@ -119,6 +119,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
                     output[(*index) + j].type = input[(*index) +
                                                       j].type;   //if it is not a function operator, add it to the output
                     output[(*index) + j].name = input[(*index) + j].name;
+                    output[(*index) + j].value = input[(*index) + j].value;   //if it is not a function operator, add it to the output
                     (*output_count)++;   //increase the output count
                     j++;
                 }
