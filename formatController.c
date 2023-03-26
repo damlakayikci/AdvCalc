@@ -148,15 +148,18 @@ Token *formatController(Token *input, int inputSize, int recursive){
     Token *output = malloc(sizeof(Token) * inputSize);
     while(i < inputSize){       //for each token
         int parenthesisCount = 0;       //count the parenthesis
-        if(isFunctionOperator(input[i].name)){     //if it is a function operator
+        printf("%s", input[i].name);
+        if(isFunctionOperator(input[i].name)){//if it is a function operator
             if (strcmp(input[i+1].name, "(") != 0){      //if it is not an open parenthesis
                 printf("Error!");
                 i++;
                 break;}
             parenthesisCount++;
-            int j = 0;
+            output[output_count].type = input[i].type;   //add it to the output
+            output[output_count].name = input[i].name;
+            output_count++;    //increase the output count
+            int j = 1;
             while(parenthesisCount != 0){   //while the parenthesis are not closed
-                parenthesisCount = 0;
                 if(i+j == inputSize-1){    //if the end of the input is reached
                     printf("Error!");
                     j++;
