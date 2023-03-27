@@ -33,7 +33,7 @@ Token peek(TokenStack *stack) {
 
 int precedence(char *operator){
     if(strcmp(operator, "^") == 0 || strcmp(operator, "<") == 0 || strcmp(operator, ">") == 0 ||
-    strcmp(operator, "$") == 0 || strcmp(operator, "#") == 0 || strcmp(operator, "!") == 0)
+    strcmp(operator, "$") == 0 || strcmp(operator, "#") == 0)
         return 1;
     else if(strcmp(operator, "+") == 0 || strcmp(operator, "-") == 0)
         return 2;
@@ -43,6 +43,8 @@ int precedence(char *operator){
         return 4;
     else if(strcmp(operator, "|") == 0)
         return 5;
+    else if(strcmp(operator, "!") == 0)
+        return 6;
     else
         return -1;
 }
