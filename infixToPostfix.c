@@ -53,7 +53,7 @@ int isOperator(char *ch)
 {
     return (strcmp(ch, "+") == 0 || strcmp(ch, "-") == 0 || strcmp(ch, "*") == 0 ||
             strcmp(ch, "|") == 0 || strcmp(ch, "<") == 0 || strcmp(ch, ">") == 0 || strcmp(ch, "^") == 0 ||
-            strcmp(ch, "$") == 0 || strcmp(ch, "#") == 0 || strcmp(ch, "!") == 0);
+            strcmp(ch, "$") == 0 || strcmp(ch, "#") == 0 || strcmp(ch, "!") == 0) || strcmp(ch, "&") == 0;
 
 }
 
@@ -62,47 +62,54 @@ int isOperator(char *ch)
 Token *infixToPostfix(Token *infix, int infixSize)
 {
     int i, j;
-    Token *postfix = malloc(sizeof(Token) * (infixSize));
+    Token *postfix = malloc(sizeof(Token) * (infixSize+1));
     TokenStack stack;
     stack.top = -1;
 
     for (i = 0, j = 0; i < infixSize; i++) {
         // If the scanned character is operand
         // add it to the postfix expression
-        if (infix[i].type == TOKEN_TYPE_IDENTIFIER) {
-            postfix[j].name = infix[i].name;
-            postfix[j++].type = infix[i].type;
-        }
-
-            // if the scanned character is '('
-            // push it in the stack
-        else if (strcmp(infix[i].name, "(") == 0) {
-            push(&stack,infix[i]);
-        }
-
-            // if the scanned character is ')'
-            // pop the stack and add it to the
-            // output string until empty or '(' found
-        else if (strcmp(infix[i].name, ")") == 0) {
-            while (stack.top > -1 && strcmp(peek(&stack).name, "(") != 0) {
-                pop(&stack, &postfix[j++]);
+        if (infix[i].name != NULL) {
+            if (infix[i].type == TOKEN_TYPE_IDENTIFIER) {
+                postfix[j].name = infix[i].name;
+                postfix[j++].type = infix[i].type;
             }
-            if (stack.top > -1 && strcmp(peek(&stack).name, "(") != 0) {
-                printf("Invalid Expression");
-                return 0;
-            }else
-                stack.top--;
-        }
 
-            // If the scanned character is an operator
-            // push it in the stack
-        else if (isOperator(infix[i].name)) {
-            while (stack.top > -1 && precedence(peek(&stack).name) >= precedence(infix[i].name)) {
-                pop(&stack, &postfix[j++]);
+            else if(infix[i].type == TOKEN_TYPE_NUMBER) {
+                postfix[j].name = infix[i].name;
+                postfix[j].value = infix[i].value;
+                postfix[j++].type = infix[i].type;
             }
-            push(&stack, infix[i]);
-            //stack[++top]->name = infix[i].name;
-            //stack[top]->type = infix[i].type;
+                // if the scanned character is '('
+                // push it in the stack
+            else if (strcmp(infix[i].name, "(") == 0) {
+                push(&stack, infix[i]);
+            }
+
+                // if the scanned character is ')'
+                // pop the stack and add it to the
+                // output string until empty or '(' found
+            else if (strcmp(infix[i].name, ")") == 0) {
+                while (stack.top > -1 && strcmp(peek(&stack).name, "(") != 0) {
+                    pop(&stack, &postfix[j++]);
+                }
+                if (stack.top > -1 && strcmp(peek(&stack).name, "(") != 0) {
+                    printf("Invalid Expression");
+                    return 0;
+                } else
+                    stack.top--;
+            }
+
+                // If the scanned character is an operator
+                // push it in the stack
+            else if (isOperator(infix[i].name)) {
+                while (stack.top > -1 && precedence(peek(&stack).name) >= precedence(infix[i].name)) {
+                    pop(&stack, &postfix[j++]);
+                }
+                push(&stack, infix[i]);
+                //stack[++top]->name = infix[i].name;
+                //stack[top]->type = infix[i].type;
+            }
         }
     }
 
@@ -153,10 +160,14 @@ int main() {
             if (output[i].name != NULL) {
                 num_tokens_formatcontroller++;
                 printf("OUTPUT %d: Name: %s \n", i + 1, output[i].name);
+            }else{
+                num_tokens_formatcontroller++;
+                printf("OUTPUT %d: Name: %s \n", i + 1, "null");
             }
             i++;
         }
     }
+
     Token *postfix = infixToPostfix(output, num_tokens_formatcontroller);
 
     for (int j = 0; j < num_tokens_formatcontroller; j++) {
