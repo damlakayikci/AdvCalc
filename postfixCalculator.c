@@ -4,53 +4,41 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include "token.h"
 
 #define INT_BITS 32
+#define MAX_LENGTH 256
 // Stack type
-struct Stack
-{
+typedef struct {
+    Token items[MAX_LENGTH];
     int top;
-    unsigned capacity;
-    int* array;
-};
+} TokenStack;
 
-// Stack Operations
-struct Stack* createStack( unsigned capacity )
+int isOperator(char *ch)
 {
-    struct Stack* stack = (struct Stack*) malloc(sizeof(struct Stack));
+    return (strcmp(ch, "+") == 0 || strcmp(ch, "-") == 0 || strcmp(ch, "*") == 0 ||
+            strcmp(ch, "|") == 0 || strcmp(ch, "<") == 0 || strcmp(ch, ">") == 0 || strcmp(ch, "^") == 0 ||
+            strcmp(ch, "$") == 0 || strcmp(ch, "#") == 0 || strcmp(ch, "!") == 0) || strcmp(ch, "&") == 0;
 
-    if (!stack) return NULL;
-
-    stack->top = -1;
-    stack->capacity = capacity;
-    stack->array = (int*) malloc(stack->capacity * sizeof(int));
-
-    if (!stack->array) return NULL;
-
-    return stack;
 }
 
-int isEmpty(struct Stack* stack)
-{
+int isEmpty(TokenStack *stack){
     return stack->top == -1 ;
 }
 
-int peek(struct Stack* stack)
-{
-    return stack->array[stack->top];
-}
-
-int pop(struct Stack* stack)
-{
+Token pop(TokenStack *stack){
     if (!isEmpty(stack))
-        return stack->array[stack->top--] ;
-    return '$';
+        return stack->items[stack->top--] ;
+    return (Token) NULL;
 }
 
-void push(struct Stack* stack,int op)
-{
-    stack->array[++stack->top] = op;
+void push(TokenStack *stack, int item) {
+    stack->top++;
+    stack->items[stack->top].name = "temp";
+    stack->items[stack->top].type = TOKEN_TYPE_NUMBER;
+    stack->items[stack->top].value = item;
 }
+
 int leftRotate(int n, unsigned int d)
 {
     /* In n<<d, last d bits are 0. To put first 3 bits of n at
@@ -68,73 +56,66 @@ int rightRotate(int n, unsigned int d)
 
 // The main function that returns value
 // of a given postfix expression
-int evaluatePostfix(char* exp)
-{
-    // Create a stack of capacity equal to expression size
-    struct Stack* stack = createStack(strlen(exp));
-    int i;
+int evaluatePostfix(Token* postfix, int postfixSize){
+    Token *output = malloc(sizeof(Token) * (postfixSize + 1));
+    TokenStack stack;
+    stack.top = -1;
 
-    // See if stack was created successfully
-    if (!stack) return -1;
-
+    int i = 0;
     // Scan all characters one by one
-    for (i = 0; exp[i]; ++i)
-    {
-        //if the character is blank space then continue
-        if(exp[i]==' ')continue;
-
-            // If the scanned character is an
-            // operand (number here),extract the full number
-            // Push it to the stack.
-        else if (isdigit(exp[i]))
-        {
-            int num=0;
-
-            //extract full number
-            while(isdigit(exp[i]))
-            {
-                num=num*10 + (int)(exp[i]-'0');
-                i++;
+    for (i = 0; i < postfixSize; ++i){
+        if (isOperator(postfix[i].name)){
+            if (strcmp(postfix[i].name, "!") == 0){
+                if (pop(&stack).type == TOKEN_TYPE_IDENTIFIER){
+                    int val1 = pop(&stack).value;
+                    push(&stack, ~val1);
+                }
+                else if (pop(&stack).type == TOKEN_TYPE_NUMBER){
+                    int val1 = pop(&stack).value;
+                    push(&stack, ~val1);
+                }
+                else
+                    printf("Error: Invalid operand for ! operator");
             }
-            i--;
+            else if (pop(&stack).type == TOKEN_TYPE_IDENTIFIER || pop(&stack).type == TOKEN_TYPE_NUMBER){
+                int val1 = pop(&stack).value;
+                if (pop(&stack).type == TOKEN_TYPE_IDENTIFIER || pop(&stack).type == TOKEN_TYPE_NUMBER){
+                    int val2 = pop(&stack).value;
 
-            //push the element in the stack
-            push(stack,num);
+                    switch (postfix[i].name[i])
+                    {
+                        case '+': push(&stack, val2 + val1); break;
+                        case '-': push(&stack, val2 - val1); break;
+                        case '*': push(&stack, val2 * val1); break;
+                        case '^': push(&stack, val2 ^ val1); break;
+                        case '$': push(&stack, leftRotate(val2,val1)); break;
+                        case '#': push(&stack, rightRotate(val2,  val1)); break;
+                        case '<': push(&stack, val2 << val1); break;
+                        case '>': push(&stack, val2 >> val1); break;
+                        case '&': push(&stack, val2 & val1); break;
+                        case '|': push(&stack, val2 | val1); break;
+                    }
+                }
+                else{
+                    printf("Error: Invalid operand for %s operator", postfix[i].name);
+                    return 0;
+                }
+            }
+            else{
+                printf("Error: Invalid operand for %s operator", postfix[i].name);
+                return 0;
+            }
         }
-
-            // If the scanned character is an operator, pop two
-            // elements from stack apply the operator
-        else
-        {
-            int val1 = pop(stack);
-            int val2 = pop(stack);
-
-            switch (exp[i])
-            {
-                case '+': push(stack, val2 + val1); break;
-                case '-': push(stack, val2 - val1); break;
-                case '*': push(stack, val2 * val1); break;
-                case '^': push(stack, val2 ^ val1); break;
-                case '$': push(stack, leftRotate(val2,val1)); break;
-                case '#': push(stack, rightRotate(val2,  val1)); break;
-                case '!': push(stack,val2),push(stack, ~val1); break;
-                case '<': push(stack, val2 << val1); break;
-                case '>': push(stack, val2 >> val1); break;
-                case '&': push(stack, val2 & val1); break;
-                case '|': push(stack, val2 | val1); break;
-
-            }
+        else if (postfix[i].type == TOKEN_TYPE_NUMBER){
+            push(&stack, postfix[i].value);
+        }
+        else if (postfix[i].type == TOKEN_TYPE_IDENTIFIER){
+            push(&stack, postfix[i].value);
+        }
+        else{
+            printf("Error: Invalid token");
+            return 0;
         }
     }
-    return pop(stack);
+    return pop(&stack).value;
 }
-
-// Driver program to test above functions
-int main()
-{
-    char exp[] = "abcde-^*+fgh*+i-^";
-    printf ("%d", evaluatePostfix(exp));
-    return 0;
-}
-
-// This code is contributed by Arnab Kundu
