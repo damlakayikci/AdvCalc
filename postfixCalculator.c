@@ -132,6 +132,8 @@ int isEmpty(TokenStack *stack){
 Token popPostfix(TokenStack *stack){
     if (!isEmpty(stack))
         return stack->items[stack->top--] ;
+    const Token result;
+    return result;
 }
 
 void pushPostfix(TokenStack *stack, int item) {
@@ -179,9 +181,9 @@ int evaluatePostfix(Token* postfix, int postfixSize){
                     else
                         printf("Error: Invalid operand for ! operator");
                 }
-                else if (popPostfix(&stack).type == TOKEN_TYPE_IDENTIFIER || popPostfix(&stack).type == TOKEN_TYPE_NUMBER){
+                else if (peek(&stack).type == TOKEN_TYPE_IDENTIFIER || peek(&stack).type == TOKEN_TYPE_NUMBER){
                     int val1 = popPostfix(&stack).value;
-                    if (popPostfix(&stack).type == TOKEN_TYPE_IDENTIFIER || popPostfix(&stack).type == TOKEN_TYPE_NUMBER){
+                    if (peek(&stack).type == TOKEN_TYPE_IDENTIFIER || peek(&stack).type == TOKEN_TYPE_NUMBER){
                         int val2 = popPostfix(&stack).value;
                         switch (postfix[i].name[0]){
                             case '+': pushPostfix(&stack, val2 + val1); break;
@@ -189,12 +191,13 @@ int evaluatePostfix(Token* postfix, int postfixSize){
                             case '*': pushPostfix(&stack, val2 * val1); break;
                             case '^': pushPostfix(&stack, val2 ^ val1); break;
                             case '$': pushPostfix(&stack, leftRotate(val2,val1)); break;
-                            case '#': pushPostfix(&stack, rightRotate(val2,  val1)); break;
+                            case '#': pushPostfix(&stack, rightRotate(val2,val1)); break;
                             case '<': pushPostfix(&stack, val2 << val1); break;
                             case '>': pushPostfix(&stack, val2 >> val1); break;
                             case '&': pushPostfix(&stack, val2 & val1); break;
                             case '|': pushPostfix(&stack, val2 | val1); break;
                         }
+                        printf("%d %d %d %s \n",val2, val1, peek(&stack).value, postfix[i].name);
                     }
                     else{
                         printf("Error: Invalid operand for %s operator", postfix[i].name);
