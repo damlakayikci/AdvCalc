@@ -25,8 +25,8 @@ Token *changeParenthesis(Token *tokens, int input_length) {
     int index = 0;
     int p = 0; // parenthesis counter
     // array to keep track of the parenthesis
-    int *parenthesis = malloc(sizeof(int)*input_length); // 0 for normal parenthesis, 1 for operator parenthesis
-   // int parenthesis[input_length] ;
+    int *parenthesis = malloc(sizeof(int) * input_length); // 0 for normal parenthesis, 1 for operator parenthesis
+    // int parenthesis[input_length] ;
     // If it's a comment line, do nothing, return the tokens
     if (strcmp(tokens[0].name, "Comment_line") == 0) {
         return tokens;
@@ -48,7 +48,10 @@ Token *changeParenthesis(Token *tokens, int input_length) {
         }
         index++;
     }
-
+    if (p != 0) {
+        printf("Error: Parenthesis mismatch\n");
+        return NULL;
+    }
     return tokens;
 }
 
@@ -185,7 +188,9 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
         }
     }
     tokens = changeParenthesis(tokens, input_length);
-
+    if (tokens == NULL) {
+        return NULL;
+    }
     // return the array of tokens
     return tokens;
 }
