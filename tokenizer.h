@@ -70,7 +70,7 @@ Token *changeParenthesis(Token *tokens, int input_length) {
 //  xor  [ ( (a+b) + xor[ (b+y), c  ]  ), xor[ (a+b) , ( a+ not[ c]  )  ]  ]
 //       1              2          -2        2                 3 -3    -2 -1
 
-Token *tokenizer(Token *tokens, char *input, int *num_tokens, Token *variables, int *num_variables) {
+Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variables) {
     // get the length of the input string
     int num_local_tokens = 0;
     int input_length = strlen(input);
@@ -82,8 +82,8 @@ Token *tokenizer(Token *tokens, char *input, int *num_tokens, Token *variables, 
     }
 
     // allocate memory for the array of tokens
-    tokens = NULL;
-    tokens = malloc(sizeof(Token) * input_length);
+    // tokens = NULL;
+    Token *tokens = malloc(sizeof(Token) * input_length);
 
     // iterate through the input string, one character at a time
     int i = 0;

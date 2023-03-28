@@ -13,18 +13,17 @@
 
 int main() {
     int num_variables = 0;
-    int output_count = 0;
-    int index = 0;
-    Token *tokens = malloc(sizeof(Token) * MAX_LENGTH);
+    // Token *tokens = malloc(sizeof(Token) * MAX_LENGTH);
     Token *variables = malloc(sizeof(Token) * MAX_VARIABLES);
     char input[256];
 
     while (1) {
         int num_tokens = 0;
-
+        int index = 0;
+        int output_count = 0;
         printf("Enter input string: ");
         fgets(input, 256, stdin);
-        Token *tokens = tokenizer(tokens, input, &num_tokens, variables, &num_variables);
+        Token *tokens = tokenizer(input, &num_tokens, variables, &num_variables);
 
         if (tokens == NULL) {
             printf("Error!\n");
