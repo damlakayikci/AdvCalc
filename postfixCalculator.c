@@ -33,16 +33,16 @@ Token peek(TokenStack *stack) {
 }
 
 int precedence(char *operator){
-    if(strcmp(operator, "^") == 0 || strcmp(operator, "<") == 0 || strcmp(operator, ">") == 0 ||
-       strcmp(operator, "$") == 0 || strcmp(operator, "#") == 0)
+    if(strcmp(operator, "|") == 0)
         return 1;
-    else if(strcmp(operator, "+") == 0 || strcmp(operator, "-") == 0)
-        return 2;
-    else if(strcmp(operator, "*") == 0)
-        return 3;
     else if(strcmp(operator, "&") == 0)
+        return 2;
+    else if(strcmp(operator, "+") == 0 || strcmp(operator, "-") == 0)
+        return 3;
+    else if(strcmp(operator, "*") == 0)
         return 4;
-    else if(strcmp(operator, "|") == 0)
+    else if(strcmp(operator, "^") == 0 || strcmp(operator, "<") == 0 || strcmp(operator, ">") == 0 ||
+       strcmp(operator, "$") == 0 || strcmp(operator, "#") == 0)
         return 5;
     else if(strcmp(operator, "!") == 0)
         return 6;
@@ -281,3 +281,4 @@ int main() {
 }
 //xor(((5 + 3) * 7), (ls(10, 2) & (rs(15, 1) | 12)))
 //(rs(100, 1) & (not(100) |  ls(6, 2))) + not(2)
+//67&67|67+xor(67,ls(67,2))
