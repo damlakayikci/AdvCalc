@@ -14,22 +14,20 @@ int isFunctionOperator(char *ch) {
 int shouldntRepeat(char *ch) {
     return strchr("+-*&|,=", *ch) != NULL;
 }
-// int isExpression (Token *input, int parenthesisCount, int index){
-//     if (input[index].type == TOKEN_TYPE_OPENPARENTHESIS){
-//         parenthesisCount++;
-//         isExpression(input, parenthesisCount, ++index);
-//     }
-//     else if (input[index].type == TOKEN_TYPE_CLOSEPARENTHESIS){
-//         parenthesisCount--;
-//         index++;
-//     }
-//     if (parenthesisCount == 0){
-//         return 1;
-//     }
-//     return 0;
 
-
-// }
+int isExpression(Token *input, int parenthesisCount, int index) {
+    if (input[index].type == TOKEN_TYPE_OPENPARENTHESIS) {
+        parenthesisCount++;
+        isExpression(input, parenthesisCount, ++index);
+    } else if (input[index].type == TOKEN_TYPE_CLOSEPARENTHESIS) {
+        parenthesisCount--;
+        index++;
+    }
+    if (parenthesisCount == 0) {
+        return 1;
+    }
+    return 0;
+}
 
 
 Token *formatController(Token *input, int inputSize, int recursive, int *index, int *output_count) {
@@ -41,7 +39,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
         return NULL;
     }
     if (!recursive) { // Initial check
-        for (int d =0; d<inputSize;d++) {       //for each token
+        for (int d = 0; d < inputSize; d++) {       //for each token
             // for repeated tokens return NULL
             if (input[d].type == TOKEN_TYPE_IDENTIFIER && input[d + 1].type == TOKEN_TYPE_IDENTIFIER) {
                 printf("Error: Repeated identifier\n");
@@ -51,7 +49,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
                 printf("Error: Repeated number\n");
                 return NULL;
             }
-            if (shouldntRepeat(input[d].name) && shouldntRepeat(input[d+ 1].name)) {
+            if (shouldntRepeat(input[d].name) && shouldntRepeat(input[d + 1].name)) {
                 printf("Error: Repeated symbol\n");
                 return NULL;
             }

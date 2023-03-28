@@ -20,6 +20,14 @@ int isSymbol(char *ch) {
     return strchr("+-*&|(),=", *ch) != NULL;
 }
 
+int returnIndex(Token *variables, int num_tokens, char *name) {
+    for (int i = 0; i < num_tokens; i++) {
+        if (strcmp(variables[i].name, name) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
 
 Token *changeParenthesis(Token *tokens, int input_length) {
     int index = 0;
@@ -55,7 +63,7 @@ Token *changeParenthesis(Token *tokens, int input_length) {
     return tokens;
 }
 
-//  xor  ( ( (a+b) + xor( (b+y), c  )  ), xor( (a+b) , ( a+ not( c)  )  )  )
+//  xor  ( ( (a+b) + xor( (v+y), c  )  ), xor( (x+t) , ( u+ not( c)  )  )  )
 //       1 2 3  -3      3 4  -4    -3 -2     2 3  -3   3       4 -4 -3 -2 -1
 
 //         1 2  -2        2  -2       -1       1  -1   1            -1        
@@ -142,10 +150,14 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
                 tokens[*num_tokens].value = 0;
                 tokens[*num_tokens].name = name;
                 tokens[*num_tokens].type = TOKEN_TYPE_IDENTIFIER;
-                variables[*num_variables].value = 0;
-                variables[*num_variables].name = name;
-                variables[*num_variables].type = TOKEN_TYPE_IDENTIFIER;
-                (*num_variables)++;
+
+                // If variable is not on the array, add it to the array of variables
+                if (returnIndex(variables, *num_variables, name) == -1) {
+                    variables[*num_variables].value = 0;
+                    variables[*num_variables].name = name;
+                    variables[*num_variables].type = TOKEN_TYPE_IDENTIFIER;
+                    (*num_variables)++;
+                }
             }
             (*num_tokens)++;
 
