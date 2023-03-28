@@ -187,7 +187,7 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
             return NULL;
         }
     }
-    tokens = changeParenthesis(tokens, input_length);
+    //tokens = changeParenthesis(tokens, input_length);
     if (tokens == NULL) {
         return NULL;
     }
