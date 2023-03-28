@@ -12,20 +12,65 @@ int isOperatorName(char *ch) {
             strcmp(ch, "rr") == 0 || strcmp(ch, "not") == 0);
 }
 
+int isOperatorSymbol(char *ch) {
+    return strchr("^<>#$", *ch) != NULL;
+}
+
 int isSymbol(char *ch) {
     return strchr("+-*&|(),=", *ch) != NULL;
 }
 
 
+Token *changeParenthesis(Token *tokens, int input_length) {
+    int index = 0;
+    int p = 0; // parenthesis counter
+    // array to keep track of the parenthesis
+    int *parenthesis = malloc(sizeof(int) * input_length); // 0 for normal parenthesis, 1 for operator parenthesis
+    // int parenthesis[input_length] ;
+    // If it's a comment line, do nothing, return the tokens
+    if (strcmp(tokens[0].name, "Comment_line") == 0) {
+        return tokens;
+    }
+    while (index < input_length) {
+        if (tokens[index].type == TOKEN_TYPE_OPENPARENTHESIS) {
+            if (isOperatorSymbol(tokens[index - 1].name)) {
+                tokens[index].type = TOKEN_TYPE_OPENPARENTHESISOPERATOR;
+                parenthesis[++p] = 1;
+            } else {
+                parenthesis[++p] = 0;
+            }
+        } else if (tokens[index].type == TOKEN_TYPE_CLOSEPARENTHESIS) {
+            if (parenthesis[p] == 1) {
+                tokens[index].type = TOKEN_TYPE_CLOSEPARENTHESISOPERATOR;
+            }
+            parenthesis[p] = -1;
+            p--;
+        }
+        index++;
+    }
+    if (p != 0) {
+        printf("Error: Parenthesis mismatch\n");
+        return NULL;
+    }
+    return tokens;
+}
+
+//  xor  ( ( (a+b) + xor( (b+y), c  )  ), xor( (a+b) , ( a+ not( c)  )  )  )
+//       1 2 3  -3      3 4  -4    -3 -2     2 3  -3   3       4 -4 -3 -2 -1
+
+//         1 2  -2        2  -2       -1       1  -1   1            -1        
+//  xor  [ ( (a+b) + xor[ (b+y), c  ]  ), xor[ (a+b) , ( a+ not[ c]  )  ]  ]
+//       1              2          -2        2                 3 -3    -2 -1
+
 Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variables) {
     // get the length of the input string
     int input_length = strlen(input);
     if (input[0] == '%') {
-            printf("\n");
-            Token *tokens = malloc( sizeof(Token));
-            tokens[0].name = "Comment_line";
-            return tokens;
-        }
+        printf("\n");
+        Token *tokens = malloc(sizeof(Token));
+        tokens[0].name = "Comment_line";
+        return tokens;
+    }
 
     // allocate memory for the array of tokens
     Token *tokens = malloc(sizeof(Token) * input_length);
@@ -137,12 +182,15 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
             i++;
         } else if (isspace(input[i])) {
             i++;
-        }  else {
+        } else {
             printf("Error: Invalid character%c\n", input[i]);
             return NULL;
         }
     }
-
+    tokens = changeParenthesis(tokens, input_length);
+    if (tokens == NULL) {
+        return NULL;
+    }
     // return the array of tokens
     return tokens;
 }

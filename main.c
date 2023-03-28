@@ -7,6 +7,7 @@
 #include "formatController.h"
 
 #define MAX_LENGTH 256
+#define MAX_VARIABLES 128
 
 
 int main() {
@@ -23,7 +24,7 @@ int main() {
 
     // CONTROLLER
     for (int i = 0; i < num_tokens; i++) {
-        printf("Token %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, tokens[i].name, tokens[i].type,
+        printf("Tokenizer output\t %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, tokens[i].name, tokens[i].type,
                tokens[i].value);
     }
     for (int i = 0; i < num_variables; i++) {
