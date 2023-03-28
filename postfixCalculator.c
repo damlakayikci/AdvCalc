@@ -159,43 +159,46 @@ int rightRotate(int n, unsigned int d)
 // The main function that returns value
 // of a given postfix expression
 int evaluatePostfix(Token* postfix, int postfixSize){
-    Token *output = malloc(sizeof(Token) * (postfixSize + 1));
     TokenStack stack;
     stack.top = -1;
 
     int i = 0;
     // Scan all characters one by one
     for (i = 0; i < postfixSize; ++i){
-        if (isOperator(postfix[i].name)){
-            if (strcmp(postfix[i].name, "!") == 0){
-                if (popPostfix(&stack).type == TOKEN_TYPE_IDENTIFIER){
-                    int val1 = popPostfix(&stack).value;
-                    pushPostfix(&stack, ~val1);
+        if (postfix[i].name != NULL) {
+            if (isOperator(postfix[i].name)){
+                if (strcmp(postfix[i].name, "!") == 0){
+                    if (popPostfix(&stack).type == TOKEN_TYPE_IDENTIFIER){
+                        int val1 = popPostfix(&stack).value;
+                        pushPostfix(&stack, ~val1);
+                    }
+                    else if (popPostfix(&stack).type == TOKEN_TYPE_NUMBER){
+                        int val1 = popPostfix(&stack).value;
+                        pushPostfix(&stack, ~val1);
+                    }
+                    else
+                        printf("Error: Invalid operand for ! operator");
                 }
-                else if (popPostfix(&stack).type == TOKEN_TYPE_NUMBER){
+                else if (popPostfix(&stack).type == TOKEN_TYPE_IDENTIFIER || popPostfix(&stack).type == TOKEN_TYPE_NUMBER){
                     int val1 = popPostfix(&stack).value;
-                    pushPostfix(&stack, ~val1);
-                }
-                else
-                    printf("Error: Invalid operand for ! operator");
-            }
-            else if (popPostfix(&stack).type == TOKEN_TYPE_IDENTIFIER || popPostfix(&stack).type == TOKEN_TYPE_NUMBER){
-                int val1 = popPostfix(&stack).value;
-                if (popPostfix(&stack).type == TOKEN_TYPE_IDENTIFIER || popPostfix(&stack).type == TOKEN_TYPE_NUMBER){
-                    int val2 = popPostfix(&stack).value;
-
-                    switch (postfix[i].name[i])
-                    {
-                        case '+': pushPostfix(&stack, val2 + val1); break;
-                        case '-': pushPostfix(&stack, val2 - val1); break;
-                        case '*': pushPostfix(&stack, val2 * val1); break;
-                        case '^': pushPostfix(&stack, val2 ^ val1); break;
-                        case '$': pushPostfix(&stack, leftRotate(val2,val1)); break;
-                        case '#': pushPostfix(&stack, rightRotate(val2,  val1)); break;
-                        case '<': pushPostfix(&stack, val2 << val1); break;
-                        case '>': pushPostfix(&stack, val2 >> val1); break;
-                        case '&': pushPostfix(&stack, val2 & val1); break;
-                        case '|': pushPostfix(&stack, val2 | val1); break;
+                    if (popPostfix(&stack).type == TOKEN_TYPE_IDENTIFIER || popPostfix(&stack).type == TOKEN_TYPE_NUMBER){
+                        int val2 = popPostfix(&stack).value;
+                        switch (postfix[i].name[0]){
+                            case '+': pushPostfix(&stack, val2 + val1); break;
+                            case '-': pushPostfix(&stack, val2 - val1); break;
+                            case '*': pushPostfix(&stack, val2 * val1); break;
+                            case '^': pushPostfix(&stack, val2 ^ val1); break;
+                            case '$': pushPostfix(&stack, leftRotate(val2,val1)); break;
+                            case '#': pushPostfix(&stack, rightRotate(val2,  val1)); break;
+                            case '<': pushPostfix(&stack, val2 << val1); break;
+                            case '>': pushPostfix(&stack, val2 >> val1); break;
+                            case '&': pushPostfix(&stack, val2 & val1); break;
+                            case '|': pushPostfix(&stack, val2 | val1); break;
+                        }
+                    }
+                    else{
+                        printf("Error: Invalid operand for %s operator", postfix[i].name);
+                        return 0;
                     }
                 }
                 else{
@@ -203,20 +206,16 @@ int evaluatePostfix(Token* postfix, int postfixSize){
                     return 0;
                 }
             }
+            else if (postfix[i].type == TOKEN_TYPE_NUMBER){
+                pushPostfix(&stack, postfix[i].value);
+            }
+            else if (postfix[i].type == TOKEN_TYPE_IDENTIFIER){
+                pushPostfix(&stack, postfix[i].value);
+            }
             else{
-                printf("Error: Invalid operand for %s operator", postfix[i].name);
+                printf("Error: Invalid token");
                 return 0;
             }
-        }
-        else if (postfix[i].type == TOKEN_TYPE_NUMBER){
-            pushPostfix(&stack, postfix[i].value);
-        }
-        else if (postfix[i].type == TOKEN_TYPE_IDENTIFIER){
-            pushPostfix(&stack, postfix[i].value);
-        }
-        else{
-            printf("Error: Invalid token");
-            return 0;
         }
     }
     return popPostfix(&stack).value;
@@ -271,8 +270,10 @@ int main() {
     }
 
     printf("Result: %d\n", evaluatePostfix(postfix, num_tokens_formatcontroller));
+
     free(tokens);
     free(postfix);
 
     return 0;
 }
+//xor(((5 + 3) * 7), (ls(10, 2) & (rs(15, 1) | 12)))
