@@ -170,11 +170,11 @@ int evaluatePostfix(Token* postfix, int postfixSize){
         if (postfix[i].name != NULL) {
             if (isOperator(postfix[i].name)){
                 if (strcmp(postfix[i].name, "!") == 0){
-                    if (popPostfix(&stack).type == TOKEN_TYPE_IDENTIFIER){
+                    if (peek(&stack).type == TOKEN_TYPE_IDENTIFIER){
                         int val1 = popPostfix(&stack).value;
                         pushPostfix(&stack, ~val1);
                     }
-                    else if (popPostfix(&stack).type == TOKEN_TYPE_NUMBER){
+                    else if (peek(&stack).type == TOKEN_TYPE_NUMBER){
                         int val1 = popPostfix(&stack).value;
                         pushPostfix(&stack, ~val1);
                     }
@@ -280,3 +280,4 @@ int main() {
     return 0;
 }
 //xor(((5 + 3) * 7), (ls(10, 2) & (rs(15, 1) | 12)))
+//(rs(100, 1) & (not(100) |  ls(6, 2))) + not(2)
