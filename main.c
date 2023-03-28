@@ -28,6 +28,9 @@ int main() {
         if (tokens == NULL) {
             printf("Error!\n");
             return 0;
+        } else if (strcmp(tokens[0].name, "Comment_line") == 0) {
+            printf("\n");
+            continue;
         } else {
 
             // CONTROLLER
@@ -50,10 +53,6 @@ int main() {
                 printf("Error!\n");
                 return 0;
             } else {
-                if (strcmp(output[0].name, "Comment_line") == 0) {
-                    printf("\n");
-                    continue;
-                }
                 // END OF CONTROLLER
                 Token *postfix = infixToPostfix(output, num_tokens);
                 if (postfix == NULL) {

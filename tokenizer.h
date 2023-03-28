@@ -75,7 +75,6 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
     int num_local_tokens = 0;
     int input_length = strlen(input);
     if (input[0] == '%') {
-        printf("\n");
         Token *tokens = malloc(sizeof(Token));
         tokens[0].name = "Comment_line";
         return tokens;
