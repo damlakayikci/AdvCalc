@@ -70,8 +70,9 @@ Token *changeParenthesis(Token *tokens, int input_length) {
 //  xor  [ ( (a+b) + xor[ (b+y), c  ]  ), xor[ (a+b) , ( a+ not[ c]  )  ]  ]
 //       1              2          -2        2                 3 -3    -2 -1
 
-Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variables) {
+Token *tokenizer(Token *tokens, char *input, int *num_tokens, Token *variables, int *num_variables) {
     // get the length of the input string
+    int num_local_tokens = 0;
     int input_length = strlen(input);
     if (input[0] == '%') {
         printf("\n");
@@ -81,7 +82,8 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
     }
 
     // allocate memory for the array of tokens
-    Token *tokens = malloc(sizeof(Token) * input_length);
+    tokens = NULL;
+    tokens = malloc(sizeof(Token) * input_length);
 
     // iterate through the input string, one character at a time
     int i = 0;
@@ -103,9 +105,10 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
             int num = atoi(num_str);
 
             // add the number as a new token to the array
-            tokens[*num_tokens].value = num;
-            tokens[*num_tokens].name = "num_str";
-            tokens[*num_tokens].type = TOKEN_TYPE_NUMBER;
+            tokens[num_local_tokens].value = num;
+            tokens[num_local_tokens].name = "num_str";
+            tokens[num_local_tokens].type = TOKEN_TYPE_NUMBER;
+            (num_local_tokens)++;
             (*num_tokens)++;
 
             // move the index to the end of the number
@@ -126,30 +129,30 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
             strncpy(name, &input[i], j - i);
             name[j - i] = '\0';
             if (isOperatorName(name)) {   // if it's an operator, add the string as a new token to the array
-                tokens[*num_tokens].name = name;
+                tokens[num_local_tokens].name = name;
                 if (strcmp(name, "xor") == 0) {
-                    tokens[*num_tokens].type = TOKEN_TYPE_XOR;
-                    tokens[*num_tokens].name = "^";
+                    tokens[num_local_tokens].type = TOKEN_TYPE_XOR;
+                    tokens[num_local_tokens].name = "^";
                 } else if (strcmp(name, "ls") == 0) {
-                    tokens[*num_tokens].type = TOKEN_TYPE_LS;
-                    tokens[*num_tokens].name = "<";
+                    tokens[num_local_tokens].type = TOKEN_TYPE_LS;
+                    tokens[num_local_tokens].name = "<";
                 } else if (strcmp(name, "rs") == 0) {
-                    tokens[*num_tokens].type = TOKEN_TYPE_RS;
-                    tokens[*num_tokens].name = ">";
+                    tokens[num_local_tokens].type = TOKEN_TYPE_RS;
+                    tokens[num_local_tokens].name = ">";
                 } else if (strcmp(name, "lr") == 0) {
-                    tokens[*num_tokens].type = TOKEN_TYPE_LR;
-                    tokens[*num_tokens].name = "$";
+                    tokens[num_local_tokens].type = TOKEN_TYPE_LR;
+                    tokens[num_local_tokens].name = "$";
                 } else if (strcmp(name, "rr") == 0) {
-                    tokens[*num_tokens].type = TOKEN_TYPE_RR;
-                    tokens[*num_tokens].name = "#";
+                    tokens[num_local_tokens].type = TOKEN_TYPE_RR;
+                    tokens[num_local_tokens].name = "#";
                 } else if (strcmp(name, "not") == 0) {
-                    tokens[*num_tokens].type = TOKEN_TYPE_NOT;
-                    tokens[*num_tokens].name = "!";
+                    tokens[num_local_tokens].type = TOKEN_TYPE_NOT;
+                    tokens[num_local_tokens].name = "!";
                 }
             } else {   // if it's a variable, add the string as a new token to the array
-                tokens[*num_tokens].value = 0;
-                tokens[*num_tokens].name = name;
-                tokens[*num_tokens].type = TOKEN_TYPE_IDENTIFIER;
+                tokens[num_local_tokens].value = 0;
+                tokens[num_local_tokens].name = name;
+                tokens[num_local_tokens].type = TOKEN_TYPE_IDENTIFIER;
 
                 // If variable is not on the array, add it to the array of variables
                 if (returnIndex(variables, *num_variables, name) == -1) {
@@ -159,6 +162,7 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
                     (*num_variables)++;
                 }
             }
+            (num_local_tokens)++;
             (*num_tokens)++;
 
             // move the index to the end of the string
@@ -169,27 +173,28 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
             char *name = malloc(sizeof(char) * 2);
             strncpy(name, &input[i], 1);
             if (input[i] == '+') {
-                tokens[*num_tokens].type = TOKEN_TYPE_PLUS;
+                tokens[num_local_tokens].type = TOKEN_TYPE_PLUS;
             } else if (input[i] == '-') {
-                tokens[*num_tokens].type = TOKEN_TYPE_MINUS;
+                tokens[num_local_tokens].type = TOKEN_TYPE_MINUS;
             } else if (input[i] == '*') {
-                tokens[*num_tokens].type = TOKEN_TYPE_ASTERISK;
+                tokens[num_local_tokens].type = TOKEN_TYPE_ASTERISK;
             } else if (input[i] == '&') {
-                tokens[*num_tokens].type = TOKEN_TYPE_AMPERSAND;
+                tokens[num_local_tokens].type = TOKEN_TYPE_AMPERSAND;
             } else if (input[i] == '|') {
-                tokens[*num_tokens].type = TOKEN_TYPE_PIPE;
+                tokens[num_local_tokens].type = TOKEN_TYPE_PIPE;
             } else if (input[i] == '(') {
-                tokens[*num_tokens].type = TOKEN_TYPE_OPENPARENTHESIS;
+                tokens[num_local_tokens].type = TOKEN_TYPE_OPENPARENTHESIS;
             } else if (input[i] == ')') {
-                tokens[*num_tokens].type = TOKEN_TYPE_CLOSEPARENTHESIS;
+                tokens[num_local_tokens].type = TOKEN_TYPE_CLOSEPARENTHESIS;
             } else if (input[i] == ',') {
-                tokens[*num_tokens].type = TOKEN_TYPE_COMMA;
+                tokens[num_local_tokens].type = TOKEN_TYPE_COMMA;
             } else if (input[i] == '=') {
-                tokens[*num_tokens].type = TOKEN_TYPE_EQUALS;
+                tokens[num_local_tokens].type = TOKEN_TYPE_EQUALS;
             }
-            tokens[*num_tokens].name = name;
-            tokens[*num_tokens].name[1] = '\0';
-            tokens[*num_tokens].value = 0;
+            tokens[num_local_tokens].name = name;
+            tokens[num_local_tokens].name[1] = '\0';
+            tokens[num_local_tokens].value = 0;
+            (num_local_tokens)++;
             (*num_tokens)++;
             i++;
         } else if (isspace(input[i])) {
