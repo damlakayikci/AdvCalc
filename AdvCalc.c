@@ -43,6 +43,16 @@ int main() {
             Token *tokens = tokenizer(input, &num_tokens, variables, &num_variables);
             // if function doesn't return null, there isn't an error
             if (tokens != NULL) {
+
+                // CONTROLLER
+                for (int i = 0; i < num_tokens; ++i) {
+                    printf("Tokenizer output\t %d: Name: %s\t\t Type: %u\t\t Value: %lld\n", i + 1, tokens[i].name,
+                           tokens[i].type,
+                           tokens[i].value);
+                }
+                printf("Num tokens: %d\n", num_tokens);
+                // END CONTROLLER
+
                 if (strcmp(tokens[0].name, "Comment_line") == 0) {
                     printf("\n");
                     continue;
@@ -97,11 +107,8 @@ int main() {
                                                variables[i].value);
                                     }
                                     // END CONTROLLER
-
                                 }
-
                             }
-
                         }
                             // if there is no equal sign in the input
                         else {
