@@ -24,9 +24,18 @@ int main() {
         printf("Enter input string: ");
         fgets(input, 256, stdin);
         //  if the input is blank
-        if (isspace(*input)) {
-            printf("Blank input\n");
-            continue;
+
+        int len = strlen(input);
+        int is_empty = 1;
+        for (int i = 0; i < len; i++) {
+            if (!isspace(input[i])) {
+                is_empty = 0;
+                break;
+            }
+        }
+
+        if (is_empty) {
+            printf("Input is empty.\n");
         } else {
             // tokenize the input
             Token *tokens = tokenizer(input, &num_tokens, variables, &num_variables);

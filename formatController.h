@@ -34,7 +34,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
     Token *output = malloc(sizeof(Token) * inputSize);
     int recIndex;
     int nonRecIndex;
-    if ((inputSize >= 2) && (input[1].type == TOKEN_TYPE_EQUALS) && (input[0].type != TOKEN_TYPE_IDENTIFIER)) {
+    if ((input[1].type == TOKEN_TYPE_EQUALS) && ((input[0].type != TOKEN_TYPE_IDENTIFIER)|| (inputSize <= 2) )) {
         printf("Error: Equal sign\n");
         return NULL;
     }
