@@ -91,7 +91,7 @@ Token *infixToPostfix(Token *infix, int infixSize) {
                 }
                 if (stack.top > -1 && strcmp(peek(&stack).name, "(") != 0) {
                     printf("Invalid Expression");
-                    return 0;
+                    return NULL;
                 } else
                     stack.top--;
             }
@@ -113,7 +113,7 @@ Token *infixToPostfix(Token *infix, int infixSize) {
     while (stack.top > -1) {
         if (strcmp(peek(&stack).name, "(") == 0) {
             printf("Invalid Expression");
-            return 0;
+            return NULL;
         }
         pop(&stack, &postfix[j++]);
     }
@@ -227,11 +227,11 @@ LLI evaluatePostfix(Token* postfix, int postfixSize , Token* variables, int num_
                         printf("%lld %lld %lld %s \n", val2, val1, peek(&stack).value, postfix[i].name);
                     } else {
                         printf("Error: Invalid operand for %s operator", postfix[i].name);
-                        return 0;
+                        return NULL;
                     }
                 } else {
                     printf("Error: Invalid operand for %s operator", postfix[i].name);
-                    return 0;
+                    return NULL
                 }
             }
             else if (postfix[i].type == TOKEN_TYPE_NUMBER){
@@ -246,7 +246,7 @@ LLI evaluatePostfix(Token* postfix, int postfixSize , Token* variables, int num_
             }
             else{
                 printf("Error: Invalid token");
-                return 0;
+                return NULL;
             }
         }
     }
