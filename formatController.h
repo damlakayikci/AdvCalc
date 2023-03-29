@@ -34,11 +34,12 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
     Token *output = malloc(sizeof(Token) * inputSize);
     int recIndex;
     int nonRecIndex;
+    // if there is an equal sign it should be in the second position and there should be an identifier before it
     if ((input[1].type == TOKEN_TYPE_EQUALS) && ((input[0].type != TOKEN_TYPE_IDENTIFIER)|| (inputSize <= 2) )) {
         printf("Error: Equal sign\n");
         return NULL;
     }
-    if (!recursive) { // Initial check
+    if (!recursive) { // Initial check for errors
         for (int d = 0; d < inputSize; d++) {       //for each token
             // for repeated tokens return NULL
             if (input[d].type == TOKEN_TYPE_IDENTIFIER && input[d + 1].type == TOKEN_TYPE_IDENTIFIER) {
@@ -58,7 +59,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
                 printf("Error: Empty parenthesis\n");
                 return NULL;
             }
-            if (input[d].type == TOKEN_TYPE_EQUALS && d!=1) {
+            if (input[d].type == TOKEN_TYPE_EQUALS && d!=1) { // if equal sign is not in the second index
                 printf("Equal sign is in wrong index \n");
                 return NULL;
             }

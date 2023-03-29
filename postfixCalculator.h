@@ -58,7 +58,7 @@ int isOperator(char *ch)
 
 // Main functio to convert infix expression
 // to postfix expression
-Token *infixToPostfix(Token *infix, int infixSize) {
+Token *infixToPostfix(Token *infix, int infixSize, int *error) {
     int i, j;
     Token *postfix = malloc(sizeof(Token) * (infixSize + 1));
     TokenStack stack;
@@ -91,6 +91,7 @@ Token *infixToPostfix(Token *infix, int infixSize) {
                 }
                 if (stack.top > -1 && strcmp(peek(&stack).name, "(") != 0) {
                     printf("Invalid Expression");
+                    *error = 1;
                     return 0;
                 } else
                     stack.top--;
@@ -113,6 +114,7 @@ Token *infixToPostfix(Token *infix, int infixSize) {
     while (stack.top > -1) {
         if (strcmp(peek(&stack).name, "(") == 0) {
             printf("Invalid Expression");
+            *error = 1;
             return 0;
         }
         pop(&stack, &postfix[j++]);
@@ -156,7 +158,7 @@ LLI rightRotate(LLI n, LLI d)
 
 // The main function that returns value
 // of a given postfix expression
-LLI evaluatePostfix(Token* postfix, int postfixSize , Token* variables, int num_variables){
+LLI evaluatePostfix(Token* postfix, int postfixSize , Token* variables, int num_variables, int *error){
     TokenStack stack;
     stack.top = -1;
     LLI val1 = 0;
@@ -227,10 +229,12 @@ LLI evaluatePostfix(Token* postfix, int postfixSize , Token* variables, int num_
                         printf("%lld %lld %lld %s \n", val2, val1, peek(&stack).value, postfix[i].name);
                     } else {
                         printf("Error: Invalid operand for %s operator", postfix[i].name);
+                        *error = 1;
                         return 0;
                     }
                 } else {
                     printf("Error: Invalid operand for %s operator", postfix[i].name);
+                    *error = 1;
                     return 0;
                 }
             }
@@ -246,6 +250,7 @@ LLI evaluatePostfix(Token* postfix, int postfixSize , Token* variables, int num_
             }
             else{
                 printf("Error: Invalid token");
+                *error = 1;
                 return 0;
             }
         }
