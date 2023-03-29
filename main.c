@@ -100,7 +100,7 @@ int main() {
                         printf("Error!\n");
                     } else {
                         Token *postfix = infixToPostfix(output, num_tokens);
-
+                        
                         // if infixToPostfix returns null, there is an error
                         if (postfix == NULL) {
                             printf("Error!\n");
