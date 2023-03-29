@@ -58,6 +58,10 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
                 printf("Error: Empty parenthesis\n");
                 return NULL;
             }
+            if (input[d].type == TOKEN_TYPE_EQUALS && d!=1) {
+                printf("Equal sign is in wrong index \n");
+                return NULL;
+            }
         }
     }
     while ((*index) < inputSize) {       //for each token
