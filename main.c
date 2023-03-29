@@ -3,7 +3,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include "token.h"
-#include "tokenizer.h"
+//#include "tokenizer.h"
 #include "formatController.h"
 #include "postfixCalculator.h"
 
@@ -32,54 +32,85 @@ int main() {
             printf("\n");
             continue;
         } else {
-
+            Token *tokenequals = malloc(sizeof(Token) * MAX_LENGTH);
+            int tokenequalsindex = 0;
+            Token *variable = malloc(sizeof(Token) * MAX_LENGTH);
+            int variableindex = 0;
+            for (int i = 0; i < num_tokens - 1; ++i) {
+                printf("Tokenizer output\t %d: Name: %s\t\t Type: %u\t\t Value: %lld\n", i + 1, tokens[i].name,
+                       tokens[i].type,
+                       tokens[i].value);
+                printf("Variable %d: Name: %s\t\t Type: %u\t\t Value: %lld\n", i + 1, variables[num_variables-1].name,
+                       variables[num_variables-1].type,
+                       variables[num_variables-1].value);
+                if (tokens[i].type == TOKEN_TYPE_EQUALS &&
+                    (tokens[i - 1].name == variables[num_variables-1].name)) {
+                    tokenequalsindex = 1;
+                    variable[0].name = tokens[i - 1].name;
+                    variable[0].type = tokens[i - 1].type;
+                    variable[0].value = tokens[i - 1].value;
+                }
+                if (tokenequalsindex == 1) {
+                    tokenequals[variableindex].name = tokens[i + 1].name;
+                    tokenequals[variableindex].type = tokens[i + 1].type;
+                    tokenequals[variableindex].value = tokens[i + 1].value;
+                    variableindex++;
+                }
+            }
+            if (tokenequalsindex == 1) {
+                variables[returnIndex(variables, num_variables, variable[0].name)].value = evaluatePostfix(infixToPostfix(
+                        formatController(tokenequals, variableindex, 0, &index, &output_count),variableindex),variableindex, variables, num_variables);
+                continue;
+            }
             // CONTROLLER
-            for (int i = 0; i < num_tokens; i++) {
-                printf("Tokenizer output\t %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, tokens[i].name,
+            for (int i = 0; i < num_tokens - 1; i++) {
+                printf("Tokenizer output\t %d: Name: %s\t\t Type: %u\t\t Value: %lld\n", i + 1, tokens[i].name,
                        tokens[i].type,
                        tokens[i].value);
             }
             for (int i = 0; i < num_variables; i++) {
-                printf("Variable %d: Name: %s\t\t Type: %u\t\t Value: %d\n", i + 1, variables[i].name,
+
+                printf("Variable %d: Name: %s\t\t Type: %u\t\t Value: %lld\n", i + 1, variables[i].name,
                        variables[i].type,
                        variables[i].value);
             }
             // END OF CONTROLLER
 
 
-            Token *output = formatController(tokens, num_tokens, 0, &index, &output_count);
+            if (tokenequalsindex == 0) {
+                Token *output = formatController(tokens, num_tokens, 0, &index, &output_count);
 
-            if (output == NULL) {
-                printf("Error!\n");
-                return 0;
-            } else {
-                // END OF CONTROLLER
-                Token *postfix = infixToPostfix(output, num_tokens);
-                if (postfix == NULL) {
+                if (output == NULL) {
                     printf("Error!\n");
                     return 0;
                 } else {
-
-                    // CONTROLLER
-//                    for (int j = 0; j < num_tokens; j++) {
-//                        printf("Postfix %d: Name: %s\t\t Type: %u\t\t Value: %d\n", j + 1, postfix[j].name, postfix[j].type,
-//                               postfix[j].value);
-//                    }
                     // END OF CONTROLLER
-
-                    printf("Result: %d\n", evaluatePostfix(postfix, num_tokens));
-
-                    if (output[1].type == TOKEN_TYPE_EQUALS) {
-                        Token variable = output[0];
-
+                    Token *postfix = infixToPostfix(output, num_tokens);
+                    if (postfix == NULL) {
+                        printf("Error!\n");
+                        return 0;
                     } else {
 
+                        // CONTROLLER
+                        //                    for (int j = 0; j < num_tokens; j++) {
+                        //                        printf("Postfix %d: Name: %s\t\t Type: %u\t\t Value: %d\n", j + 1, postfix[j].name, postfix[j].type,
+                        //                               postfix[j].value);
+                        //                    }
+                        // END OF CONTROLLER
+
+                        printf("Result: %lld\n", evaluatePostfix(postfix, num_tokens, variables, num_variables));
+
+                        //                    if (output[1].type == TOKEN_TYPE_EQUALS) {
+                        //                        Token variable = output[0];
+                        //
+                        //                    } else {
+                        //
+                        //                    }
                     }
-                }
 
 
 
-                // CONTROLLER
+                    // CONTROLLER
 //            else {
 //                int i = 0;
 //                while (i < num_tokens) {
@@ -91,9 +122,9 @@ int main() {
 //            }
 
 
+                }
             }
         }
-
         free(tokens);
 
     }

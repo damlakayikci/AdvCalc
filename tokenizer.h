@@ -43,6 +43,8 @@ Token *changeParenthesis(Token *tokens, int input_length) {
         if (tokens[index].type == TOKEN_TYPE_OPENPARENTHESIS) {
             if (isOperatorSymbol(tokens[index - 1].name)) {
                 tokens[index].type = TOKEN_TYPE_OPENPARENTHESISOPERATOR;
+                tokens[index].name = "(";
+                tokens[index].value = 0;
                 parenthesis[++p] = 1;
             } else {
                 parenthesis[++p] = 0;
@@ -50,6 +52,8 @@ Token *changeParenthesis(Token *tokens, int input_length) {
         } else if (tokens[index].type == TOKEN_TYPE_CLOSEPARENTHESIS) {
             if (parenthesis[p] == 1) {
                 tokens[index].type = TOKEN_TYPE_CLOSEPARENTHESISOPERATOR;
+                tokens[index].name = ")";
+                tokens[index].value = 0;
             }
             parenthesis[p] = -1;
             p--;
@@ -101,7 +105,7 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
             num_str[j - i] = '\0';
 
             // convert the number string to an integer
-            int num = atoi(num_str);
+            LLI num = atoll(num_str);
 
             // add the number as a new token to the array
             tokens[num_local_tokens].value = num;
@@ -132,6 +136,7 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
                 if (strcmp(name, "xor") == 0) {
                     tokens[num_local_tokens].type = TOKEN_TYPE_XOR;
                     tokens[num_local_tokens].name = "^";
+
                 } else if (strcmp(name, "ls") == 0) {
                     tokens[num_local_tokens].type = TOKEN_TYPE_LS;
                     tokens[num_local_tokens].name = "<";

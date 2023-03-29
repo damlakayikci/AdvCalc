@@ -21,8 +21,10 @@ typedef enum {
     TOKEN_TYPE_EQUALS,
 } TokenType;
 
+#define LLI long long int
+
 typedef struct {
     TokenType type;
-    int value;
+    LLI value;
     char *name;
 } Token;

@@ -1,7 +1,8 @@
-
+#include "tokenizer.h"
 
 #define MAX_LENGTH 256
-#define INT_BITS 32
+#define INT_BITS 64
+#define LLI long long int
 
 typedef struct {
     Token items[MAX_LENGTH];
@@ -53,6 +54,7 @@ int isOperator(char *ch)
             strcmp(ch, "$") == 0 || strcmp(ch, "#") == 0 || strcmp(ch, "!") == 0) || strcmp(ch, "&") == 0;
 
 }
+
 
 // Main functio to convert infix expression
 // to postfix expression
@@ -130,14 +132,14 @@ Token popPostfix(TokenStack *stack){
     return result;
 }
 
-void pushPostfix(TokenStack *stack, int item) {
+void pushPostfix(TokenStack *stack, LLI item) {
     stack->top++;
     stack->items[stack->top].name = "temp";
     stack->items[stack->top].type = TOKEN_TYPE_NUMBER;
     stack->items[stack->top].value = item;
 }
 
-int leftRotate(int n, unsigned int d)
+LLI leftRotate(LLI n, LLI d)
 {
     /* In n<<d, last d bits are 0. To put first 3 bits of n at
       last, do bitwise or of n<<d with n >>(INT_BITS - d) */
@@ -145,7 +147,7 @@ int leftRotate(int n, unsigned int d)
 }
 
 /*Function to right rotate n by d bits*/
-int rightRotate(int n, unsigned int d)
+LLI rightRotate(LLI n, LLI d)
 {
     /* In n>>d, first d bits are 0. To put last 3 bits of at
       first, do bitwise or of n>>d with n <<(INT_BITS - d) */
@@ -154,51 +156,80 @@ int rightRotate(int n, unsigned int d)
 
 // The main function that returns value
 // of a given postfix expression
-int evaluatePostfix(Token* postfix, int postfixSize){
+LLI evaluatePostfix(Token* postfix, int postfixSize , Token* variables, int num_variables){
     TokenStack stack;
     stack.top = -1;
+    LLI val1 = 0;
+    LLI val2 = 0;
 
     int i = 0;
     // Scan all characters one by one
     for (i = 0; i < postfixSize; ++i){
         if (postfix[i].name != NULL) {
-            if (isOperator(postfix[i].name)){
-                if (strcmp(postfix[i].name, "!") == 0){
-                    if (peek(&stack).type == TOKEN_TYPE_IDENTIFIER){
-                        int val1 = popPostfix(&stack).value;
-                        pushPostfix(&stack, ~val1);
-                    }
-                    else if (peek(&stack).type == TOKEN_TYPE_NUMBER){
-                        int val1 = popPostfix(&stack).value;
-                        pushPostfix(&stack, ~val1);
-                    }
-                    else
-                        printf("Error: Invalid operand for ! operator");
-                }
-                else if (peek(&stack).type == TOKEN_TYPE_IDENTIFIER || peek(&stack).type == TOKEN_TYPE_NUMBER){
-                    int val1 = popPostfix(&stack).value;
-                    if (peek(&stack).type == TOKEN_TYPE_IDENTIFIER || peek(&stack).type == TOKEN_TYPE_NUMBER){
-                        int val2 = popPostfix(&stack).value;
-                        switch (postfix[i].name[0]){
-                            case '+': pushPostfix(&stack, val2 + val1); break;
-                            case '-': pushPostfix(&stack, val2 - val1); break;
-                            case '*': pushPostfix(&stack, val2 * val1); break;
-                            case '^': pushPostfix(&stack, val2 ^ val1); break;
-                            case '$': pushPostfix(&stack, leftRotate(val2,val1)); break;
-                            case '#': pushPostfix(&stack, rightRotate(val2,val1)); break;
-                            case '<': pushPostfix(&stack, val2 << val1); break;
-                            case '>': pushPostfix(&stack, val2 >> val1); break;
-                            case '&': pushPostfix(&stack, val2 & val1); break;
-                            case '|': pushPostfix(&stack, val2 | val1); break;
+            if (isOperator(postfix[i].name)) {
+                if (strcmp(postfix[i].name, "!") == 0) {
+                    if (peek(&stack).type == TOKEN_TYPE_IDENTIFIER) {
+                        if (returnIndex(variables, num_variables, peek(&stack).name) == -1) {
+                            val1 = popPostfix(&stack).value;
+                        } else {
+                            val1 = variables[returnIndex(variables, num_variables, popPostfix(&stack).name)].value;
                         }
-                        printf("%d %d %d %s \n",val2, val1, peek(&stack).value, postfix[i].name);
+                        pushPostfix(&stack, ~val1);
+                    } else if (peek(&stack).type == TOKEN_TYPE_NUMBER) {
+                        val1 = popPostfix(&stack).value;
+                        pushPostfix(&stack, ~val1);
+                    } else
+                        printf("Error: Invalid operand for ! operator");
+                } else if (peek(&stack).type == TOKEN_TYPE_IDENTIFIER || peek(&stack).type == TOKEN_TYPE_NUMBER) {
+                    if (returnIndex(variables, num_variables, peek(&stack).name) == -1) {
+                        val1 = popPostfix(&stack).value;
+                    } else {
+                        val1 = variables[returnIndex(variables, num_variables, popPostfix(&stack).name)].value;
                     }
-                    else{
+                    if (peek(&stack).type == TOKEN_TYPE_IDENTIFIER || peek(&stack).type == TOKEN_TYPE_NUMBER) {
+                        if (returnIndex(variables, num_variables, peek(&stack).name) == -1) {
+                            val2 = popPostfix(&stack).value;
+                        } else {
+                            val2 = variables[returnIndex(variables, num_variables, popPostfix(&stack).name)].value;
+                        }
+                        switch (postfix[i].name[0]) {
+                            case '+':
+                                pushPostfix(&stack, val2 + val1);
+                                break;
+                            case '-':
+                                pushPostfix(&stack, val2 - val1);
+                                break;
+                            case '*':
+                                pushPostfix(&stack, val2 * val1);
+                                break;
+                            case '^':
+                                pushPostfix(&stack, val2 ^ val1);
+                                break;
+                            case '$':
+                                pushPostfix(&stack, leftRotate(val2, val1));
+                                break;
+                            case '#':
+                                pushPostfix(&stack, rightRotate(val2, val1));
+                                break;
+                            case '<':
+                                pushPostfix(&stack, val2 << val1);
+                                break;
+                            case '>':
+                                pushPostfix(&stack, val2 >> val1);
+                                break;
+                            case '&':
+                                pushPostfix(&stack, val2 & val1);
+                                break;
+                            case '|':
+                                pushPostfix(&stack, val2 | val1);
+                                break;
+                        }
+                        printf("%lld %lld %lld %s \n", val2, val1, peek(&stack).value, postfix[i].name);
+                    } else {
                         printf("Error: Invalid operand for %s operator", postfix[i].name);
                         return 0;
                     }
-                }
-                else{
+                } else {
                     printf("Error: Invalid operand for %s operator", postfix[i].name);
                     return 0;
                 }
@@ -206,8 +237,12 @@ int evaluatePostfix(Token* postfix, int postfixSize){
             else if (postfix[i].type == TOKEN_TYPE_NUMBER){
                 pushPostfix(&stack, postfix[i].value);
             }
-            else if (postfix[i].type == TOKEN_TYPE_IDENTIFIER){
-                pushPostfix(&stack, postfix[i].value);
+            else if(postfix[i].type == TOKEN_TYPE_IDENTIFIER){
+                if (returnIndex(variables, num_variables, postfix[i].name) == -1) {
+                    pushPostfix(&stack, postfix[i].value);
+                } else {
+                    pushPostfix(&stack, variables[returnIndex(variables, num_variables, postfix[i].name)].value);
+                }
             }
             else{
                 printf("Error: Invalid token");
