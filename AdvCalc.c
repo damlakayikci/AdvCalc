@@ -73,11 +73,11 @@ int main() {
                             Token *ptr = formatted;  // create a pointer to the first element of the array
                             Token variable = *(ptr);  // access the element at index 0
                             // the expression after the equal sign will be our value, so we take formatted form second element
-                            Token *postfix = infixToPostfix(&formatted[2], output_count - 2, &error);
+                            Token *postfix = infixToPostfix(&formatted[2], num_tokens - 2, &error);
 
                             // CONTROLLER
                             for (int i = 0; i < output_count - 2; ++i) {
-                                printf("Postfix output\t %d: Name: %s\t\t Type: %u\t\t Value: %lld\n", i + 1,
+                                printf("Postfix with = output\t %d: Name: %s\t\t Type: %u\t\t Value: %lld\n", i + 1,
                                        postfix[i].name,
                                        postfix[i].type,
                                        postfix[i].value);
@@ -85,7 +85,7 @@ int main() {
                             // END CONTROLLER
 
                             if (!error) { // if there is no error in converting to postfix
-                                long long int result = evaluatePostfix(postfix, output_count - 2, variables,
+                                long long int result = evaluatePostfix(postfix, num_tokens - 2, variables,
                                                                        num_variables, &error);
 
                                 // CONTROLLER
@@ -112,14 +112,21 @@ int main() {
                         }
                             // if there is no equal sign in the input
                         else {
-                            Token *postfix = infixToPostfix(formatted, output_count, &error);
+                            Token *postfix = infixToPostfix(formatted, num_tokens, &error);
                             if (!error) { // if there is no error in converting to postfix
-                                long long int result = evaluatePostfix(postfix, output_count, variables,
+
+                                // CONTROLLER
+                                for (int i = 0; i < output_count; ++i) {
+                                    printf("Postfix output\t %d: Name: %s\t\t Type: %u\t\t Value: %lld\n", i + 1,
+                                           postfix[i].name,
+                                           postfix[i].type,
+                                           postfix[i].value);
+                                }
+                                // END CONTROLLER
+
+                                long long int result = evaluatePostfix(postfix, num_tokens, variables,
                                                                        num_variables, &error);
-                                if (error) { // if there is an error in evaluating the postfix
-                                    printf("Error!\n");
-                                    continue;
-                                } else {
+                                if (!error) { // if there isn't an error in evaluating the postfix
                                     printf("Result: %lld\n", result);
                                 }
                             }
