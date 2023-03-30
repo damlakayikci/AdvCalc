@@ -16,8 +16,8 @@ int main() {
     // Token *tokens = malloc(sizeof(Token) * MAX_LENGTH);
     Token *variables = malloc(sizeof(Token) * MAX_VARIABLES);
     char input[256];
-
-    while (1) {
+int bok = 0;
+    while (bok <1) {
         int num_tokens = 0; //  keep track of the number of tokens
         int index = 0;     //  keep track of the index of the tokens
         int output_count = 0;
@@ -127,6 +127,12 @@ int main() {
                                     // END CONTROLLER
                                 }
                             }
+                            free(postfix);
+                            for (int i = 0; i < num_tokens; ++i) {
+                                postfix[i].name = NULL;
+                                postfix[i].type = 0;
+                                postfix[i].value = 0;
+                            }
                         }
                         // if there is no equal sign in the input
                         else {
@@ -157,16 +163,36 @@ int main() {
                                     printf("Result: %lld\n", result);
                                 }
                             }
+                            free(postfix);
+                            for (int i = 0; i < num_tokens; ++i) {
+                                postfix[i].name = NULL;
+                                postfix[i].type = 0;
+                                postfix[i].value = 0;
+                            }
                         }
                     }
-
+                    free(formatted);
+                    for (int i = 0; i < num_tokens; ++i) {
+                        formatted[i].name = NULL;
+                        formatted[i].type = 0;
+                        formatted[i].value = 0;
+                    }
 
                 }
 
 
             }
             free(tokens);
+            // CONTROLLER
+            for (int i = 0; i < num_tokens; ++i) {
+                tokens[i].name = NULL;
+                tokens[i].type = 0;
+                tokens[i].value = 0;
+            }
+            // END CONTROLLER
         }
+
+
     }
     return 0;
 }

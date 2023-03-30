@@ -38,7 +38,7 @@ int precedence(char *operator) {
         return 4;
     else if (strcmp(operator, "^") == 0 || strcmp(operator, "<") == 0 || strcmp(operator, ">") == 0 ||
              strcmp(operator, "$") == 0 || strcmp(operator, "#") == 0)
-        return 5;
+        return 0;
     else if (strcmp(operator, "!") == 0)
         return 6;
     else
