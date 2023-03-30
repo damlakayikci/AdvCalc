@@ -115,7 +115,7 @@ int main() {
                                     variables[var_index].value = result;
 
                                     // CONTROLLER
-                                    printf("Result: %lld\n", result);
+                                    printf("Value: %lld\n", result);
                                     // END CONTROLLER
                                     // CONTROLLER
                                     for (int i = 0; i < num_variables; ++i) {
@@ -147,10 +147,9 @@ int main() {
                                 }
                                 // END CONTROLLER
 
-                                long long int result = evaluatePostfix(postfix, num_tokens, variables,
-                                                                       num_variables, &error);
+                                long long int result = evaluatePostfix(postfix, num_tokens, variables,num_variables, &error);
 
-                                // if there isn't an error in evaluating the postfix
+                                // if there is an error in evaluating the postfix
                                 if (error) {
                                     printf("Error!\n");
                                     continue;
@@ -160,7 +159,11 @@ int main() {
                             }
                         }
                     }
+
+
                 }
+
+
             }
             free(tokens);
         }
