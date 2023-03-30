@@ -75,14 +75,15 @@ Token *changeParenthesis(Token *tokens, int input_length) {
 //       1              2          -2        2                 3 -3    -2 -1
 
 Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variables) {
-    // get the length of the input string
+    // keep track of the number of local tokens
     int num_local_tokens = 0;
+    // get the length of the input string
     int input_length = strlen(input);
-    if (input[0] == '%') {
-        Token *tokens = malloc(sizeof(Token));
-        tokens[0].name = "Comment_line";
-        return tokens;
-    }
+//    if (input[0] == '%') {
+//        Token *tokens = malloc(sizeof(Token));
+//        tokens[0].name = "Comment_line";
+//        return tokens;
+//    }
 
     // allocate memory for the array of tokens
     // tokens = NULL;
@@ -91,6 +92,10 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
     // iterate through the input string, one character at a time
     int i = 0;
     while (i < input_length) {
+        if (input[i] == '%') {
+            tokens[i].name = "Comment_line";
+            return tokens;
+        }
         // if the current character is a digit, parse it as a number
         if (isdigit(input[i])) {
             // find the end of the number
