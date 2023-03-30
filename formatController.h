@@ -40,7 +40,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
         return NULL;
     }
     if (!recursive) { // Initial check for errors
-        for (int d = 0; d < inputSize; d++) {       //for each token
+        for (int d = 0; d < inputSize-1; d++) {       //for each token
             // for repeated tokens return NULL
             if (input[d].type == TOKEN_TYPE_IDENTIFIER && input[d + 1].type == TOKEN_TYPE_IDENTIFIER) {
                 printf("Error: Repeated identifier\n");
@@ -54,7 +54,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
                 printf("Error: Repeated symbol\n");
                 return NULL;
             }
-            // empty paranthesis
+            // empty parenthesis
             if (input[d].type == TOKEN_TYPE_OPENPARENTHESIS && input[d + 1].type == TOKEN_TYPE_CLOSEPARENTHESIS) {
                 printf("Error: Empty parenthesis\n");
                 return NULL;
@@ -74,7 +74,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
                 output[(*index) + 1].name = "(";
                 (*output_count)++;    //increase the output count
                 parenthesisCount++;
-            } else { // BURASI CALISIYOR
+            } else {
                 printf("Error: Expected open parenthesis after function operator\n");
                 return NULL;
             }

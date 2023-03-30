@@ -39,7 +39,7 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = /Users/damlakayikci/Desktop/CmpE/okul/CmpE230/230-p1/cmake-build-debug/
+cmake_ninja_workdir = /Users/damlakayikci/Desktop/CmpE/okul/CmpE230/2020400060_2020400228/cmake-build-debug/
 # =============================================================================
 # Object build statements for EXECUTABLE target p1
 
@@ -49,20 +49,8 @@ cmake_ninja_workdir = /Users/damlakayikci/Desktop/CmpE/okul/CmpE230/230-p1/cmake
 
 build cmake_object_order_depends_target_p1: phony || CMakeFiles/p1.dir
 
-build CMakeFiles/p1.dir/main.c.o: C_COMPILER__p1_Debug /Users/damlakayikci/Desktop/CmpE/okul/CmpE230/230-p1/main.c || cmake_object_order_depends_target_p1
-  DEP_FILE = CMakeFiles/p1.dir/main.c.o.d
-  FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.3.sdk -std=gnu99
-  OBJECT_DIR = CMakeFiles/p1.dir
-  OBJECT_FILE_DIR = CMakeFiles/p1.dir
-
-build CMakeFiles/p1.dir/idk.c.o: C_COMPILER__p1_Debug /Users/damlakayikci/Desktop/CmpE/okul/CmpE230/230-p1/idk.c || cmake_object_order_depends_target_p1
-  DEP_FILE = CMakeFiles/p1.dir/idk.c.o.d
-  FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.3.sdk -std=gnu99
-  OBJECT_DIR = CMakeFiles/p1.dir
-  OBJECT_FILE_DIR = CMakeFiles/p1.dir
-
-build CMakeFiles/p1.dir/parse.c.o: C_COMPILER__p1_Debug /Users/damlakayikci/Desktop/CmpE/okul/CmpE230/230-p1/parse.c || cmake_object_order_depends_target_p1
-  DEP_FILE = CMakeFiles/p1.dir/parse.c.o.d
+build CMakeFiles/p1.dir/AdvCalc.c.o: C_COMPILER__p1_Debug /Users/damlakayikci/Desktop/CmpE/okul/CmpE230/2020400060_2020400228/AdvCalc.c || cmake_object_order_depends_target_p1
+  DEP_FILE = CMakeFiles/p1.dir/AdvCalc.c.o.d
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.3.sdk -std=gnu99
   OBJECT_DIR = CMakeFiles/p1.dir
   OBJECT_FILE_DIR = CMakeFiles/p1.dir
@@ -75,8 +63,9 @@ build CMakeFiles/p1.dir/parse.c.o: C_COMPILER__p1_Debug /Users/damlakayikci/Desk
 #############################################
 # Link the executable p1
 
-build p1: C_EXECUTABLE_LINKER__p1_Debug CMakeFiles/p1.dir/main.c.o CMakeFiles/p1.dir/idk.c.o CMakeFiles/p1.dir/parse.c.o
+build p1: C_EXECUTABLE_LINKER__p1_Debug CMakeFiles/p1.dir/AdvCalc.c.o | /Library/Developer/CommandLineTools/SDKs/MacOSX11.3.sdk/usr/lib/libm.tbd
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.3.sdk
+  LINK_LIBRARIES = /Library/Developer/CommandLineTools/SDKs/MacOSX11.3.sdk/usr/lib/libm.tbd
   OBJECT_DIR = CMakeFiles/p1.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -88,7 +77,7 @@ build p1: C_EXECUTABLE_LINKER__p1_Debug CMakeFiles/p1.dir/main.c.o CMakeFiles/p1
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/damlakayikci/Desktop/CmpE/okul/CmpE230/230-p1/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  COMMAND = cd /Users/damlakayikci/Desktop/CmpE/okul/CmpE230/2020400060_2020400228/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -99,7 +88,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/damlakayikci/Desktop/CmpE/okul/CmpE230/230-p1/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S/Users/damlakayikci/Desktop/CmpE/okul/CmpE230/230-p1 -B/Users/damlakayikci/Desktop/CmpE/okul/CmpE230/230-p1/cmake-build-debug
+  COMMAND = cd /Users/damlakayikci/Desktop/CmpE/okul/CmpE230/2020400060_2020400228/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S/Users/damlakayikci/Desktop/CmpE/okul/CmpE230/2020400060_2020400228 -B/Users/damlakayikci/Desktop/CmpE/okul/CmpE230/2020400060_2020400228/cmake-build-debug
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -115,7 +104,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 
 #############################################
-# Folder: /Users/damlakayikci/Desktop/CmpE/okul/CmpE230/230-p1/cmake-build-debug
+# Folder: /Users/damlakayikci/Desktop/CmpE/okul/CmpE230/2020400060_2020400228/cmake-build-debug
 
 build all: phony p1
 

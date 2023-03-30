@@ -25,8 +25,8 @@ int main() {
 
         printf("Enter input string: ");
         fgets(input, 256, stdin);
-        //  if the input is blank
 
+        //  if the input is blank
         int len = strlen(input);
         int is_empty = 1;
         for (int i = 0; i < len; i++) {
@@ -39,10 +39,14 @@ int main() {
         if (is_empty) {
             printf("Input is empty.\n");
         } else {
+
             // tokenize the input
             Token *tokens = tokenizer(input, &num_tokens, variables, &num_variables);
-            // if function doesn't return null, there isn't an error
-            if (tokens != NULL) {
+
+            // if function returns null, there is an error
+            if (tokens == NULL) {
+                printf("Error!\n");
+            } else {
 
                 // CONTROLLER
                 for (int i = 0; i < num_tokens; ++i) {
@@ -53,12 +57,18 @@ int main() {
                 printf("Num tokens: %d\n", num_tokens);
                 // END CONTROLLER
 
+                // if the first token is a comment, skip the rest
                 if (strcmp(tokens[0].name, "Comment_line") == 0) {
                     printf("\n");
                     continue;
                 } else {
                     Token *formatted = formatController(tokens, num_tokens, 0, &index, &output_count);
-                    if (formatted != NULL) { // if there is no error in formatting
+
+                    // if formatController returns null, there is an error
+                    if (formatted == NULL) {
+                        printf("Error!\n");
+                        continue;
+                    } else {
 
                         // CONTROLLER
                         for (int i = 0; i < index; ++i) {
@@ -68,10 +78,14 @@ int main() {
                                    formatted[i].value);
                         } // END CONTROLLER
 
-                        // if it is an equation
+                        // If the expression is an equation
                         if (formatted[1].type == TOKEN_TYPE_EQUALS) {
-                            Token *ptr = formatted;  // create a pointer to the first element of the array
-                            Token variable = *(ptr);  // access the element at index 0
+
+                            // create a pointer to the first element of the array
+                            Token *ptr = formatted;
+                            // access the element at index 0
+                            Token variable = *(ptr);
+
                             // the expression after the equal sign will be our value, so we take formatted form second element
                             Token *postfix = infixToPostfix(&formatted[2], num_tokens - 2, &error);
 
@@ -84,21 +98,25 @@ int main() {
                             }
                             // END CONTROLLER
 
-                            if (!error) { // if there is no error in converting to postfix
+                            // if there is error in converting to postfix
+                            if (error) {
+                                printf("Error!\n");
+                                continue;
+                            } else {
                                 long long int result = evaluatePostfix(postfix, num_tokens - 2, variables,
                                                                        num_variables, &error);
 
-                                // CONTROLLER
-                                printf("Result: %lld\n", result);
-                                // END CONTROLLER
-
-                                if (error) { // if there is an error in evaluating the postfix
+                                // if there is an error in evaluating the postfix
+                                if (error) {
                                     printf("Error!\n");
                                     continue;
                                 } else {
                                     int var_index = returnIndex(variables, num_variables, variable.name);
                                     variables[var_index].value = result;
 
+                                    // CONTROLLER
+                                    printf("Result: %lld\n", result);
+                                    // END CONTROLLER
                                     // CONTROLLER
                                     for (int i = 0; i < num_variables; ++i) {
                                         printf("Variables\t %d: Name: %s\t\t Type: %u\t\t Value: %lld\n", i + 1,
@@ -110,10 +128,15 @@ int main() {
                                 }
                             }
                         }
-                            // if there is no equal sign in the input
+                        // if there is no equal sign in the input
                         else {
                             Token *postfix = infixToPostfix(formatted, num_tokens, &error);
-                            if (!error) { // if there is no error in converting to postfix
+
+                            // if there is error in converting to postfix
+                            if (error) {
+                                printf("Error!\n");
+                                continue;
+                            } else {
 
                                 // CONTROLLER
                                 for (int i = 0; i < output_count; ++i) {
@@ -126,17 +149,18 @@ int main() {
 
                                 long long int result = evaluatePostfix(postfix, num_tokens, variables,
                                                                        num_variables, &error);
-                                if (!error) { // if there isn't an error in evaluating the postfix
+
+                                // if there isn't an error in evaluating the postfix
+                                if (error) {
+                                    printf("Error!\n");
+                                    continue;
+                                } else {
                                     printf("Result: %lld\n", result);
                                 }
                             }
                         }
-
                     }
                 }
-
-            } else {
-                printf("Error!\n");
             }
             free(tokens);
         }
