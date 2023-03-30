@@ -42,11 +42,11 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
     if (!recursive) { // Initial check for errors
         for (int d = 0; d < inputSize - 1; d++) {       //for each token
             // for repeated tokens return NULL
-            if (input[d].type == TOKEN_TYPE_IDENTIFIER && input[d + 1].type == TOKEN_TYPE_IDENTIFIER) {
+            if (input[d].type == TOKEN_TYPE_IDENTIFIER && (input[d + 1].type == TOKEN_TYPE_IDENTIFIER|| input[d + 1].type == TOKEN_TYPE_NUMBER || input[d + 1].type == TOKEN_TYPE_OPENPARENTHESIS)) {
                 printf("Error: Repeated identifier\n");
                 return NULL;
             }
-            if (input[d].type == TOKEN_TYPE_NUMBER && input[d + 1].type == TOKEN_TYPE_NUMBER) {
+            if (input[d].type == TOKEN_TYPE_NUMBER && (input[d + 1].type == TOKEN_TYPE_IDENTIFIER|| input[d + 1].type == TOKEN_TYPE_NUMBER || input[d + 1].type == TOKEN_TYPE_OPENPARENTHESIS)) {
                 printf("Error: Repeated number\n");
                 return NULL;
             }

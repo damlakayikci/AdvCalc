@@ -27,28 +27,27 @@ Token peek(TokenStack *stack) {
     return stack->items[stack->top];
 }
 
-int precedence(char *operator){
-    if(strcmp(operator, "|") == 0)
-    return 1;
-    else if(strcmp(operator, "&") == 0)
-    return 2;
-    else if(strcmp(operator, "+") == 0 || strcmp(operator, "-") == 0)
-    return 3;
-    else if(strcmp(operator, "*") == 0)
-    return 4;
-    else if(strcmp(operator, "^") == 0 || strcmp(operator, "<") == 0 || strcmp(operator, ">") == 0 ||
-                                                                                                 strcmp(operator, "$") == 0 || strcmp(operator, "#") == 0)
-    return 5;
-    else if(strcmp(operator, "!") == 0)
-    return 6;
+int precedence(char *operator) {
+    if (strcmp(operator, "|") == 0)
+        return 1;
+    else if (strcmp(operator, "&") == 0)
+        return 2;
+    else if (strcmp(operator, "+") == 0 || strcmp(operator, "-") == 0)
+        return 3;
+    else if (strcmp(operator, "*") == 0)
+        return 4;
+    else if (strcmp(operator, "^") == 0 || strcmp(operator, "<") == 0 || strcmp(operator, ">") == 0 ||
+             strcmp(operator, "$") == 0 || strcmp(operator, "#") == 0)
+        return 5;
+    else if (strcmp(operator, "!") == 0)
+        return 6;
     else
-    return -1;
+        return -1;
 }
 
 // Function to check if the scanned character
 // is an operator
-int isOperator(char *ch)
-{
+int isOperator(char *ch) {
     return (strcmp(ch, "+") == 0 || strcmp(ch, "-") == 0 || strcmp(ch, "*") == 0 ||
             strcmp(ch, "|") == 0 || strcmp(ch, "<") == 0 || strcmp(ch, ">") == 0 || strcmp(ch, "^") == 0 ||
             strcmp(ch, "$") == 0 || strcmp(ch, "#") == 0 || strcmp(ch, "!") == 0) || strcmp(ch, "&") == 0;
@@ -56,18 +55,17 @@ int isOperator(char *ch)
 }
 
 
-// Main functio to convert infix expression
-// to postfix expression
 Token *infixToPostfix(Token *infix, int infixSize, int *error) {
     int i, j;
     Token *postfix = malloc(sizeof(Token) * (infixSize + 1));
     TokenStack stack;
+    // initialize top to -1 to indicate empty stack
     stack.top = -1;
 
     for (i = 0, j = 0; i < infixSize; i++) {
         // If the scanned character is operand
         // add it to the postfix expression
-        if (infix[i].name != NULL) {
+        if (infix[i].name != NULL) { // ignore null tokens
             if (infix[i].type == TOKEN_TYPE_IDENTIFIER) {
                 postfix[j].name = infix[i].name;
                 postfix[j++].type = infix[i].type;
@@ -76,8 +74,8 @@ Token *infixToPostfix(Token *infix, int infixSize, int *error) {
                 postfix[j].value = infix[i].value;
                 postfix[j++].type = infix[i].type;
             }
-                // if the scanned character is '('
-                // push it in the stack
+
+                // if the scanned character is '(' push it in the stack
             else if (strcmp(infix[i].name, "(") == 0) {
                 push(&stack, infix[i]);
             }
@@ -123,13 +121,13 @@ Token *infixToPostfix(Token *infix, int infixSize, int *error) {
     return postfix;
 }
 
-int isEmpty(TokenStack *stack){
-    return stack->top == -1 ;
+int isEmpty(TokenStack *stack) {
+    return stack->top == -1;
 }
 
-Token popPostfix(TokenStack *stack){
+Token popPostfix(TokenStack *stack) {
     if (!isEmpty(stack))
-        return stack->items[stack->top--] ;
+        return stack->items[stack->top--];
     const Token result;
     return result;
 }
@@ -141,24 +139,22 @@ void pushPostfix(TokenStack *stack, LLI item) {
     stack->items[stack->top].value = item;
 }
 
-LLI leftRotate(LLI n, LLI d)
-{
+LLI leftRotate(LLI n, LLI d) {
     /* In n<<d, last d bits are 0. To put first 3 bits of n at
       last, do bitwise or of n<<d with n >>(INT_BITS - d) */
-    return (n << d)|(n >> (INT_BITS - d));
+    return (n << d) | (n >> (INT_BITS - d));
 }
 
 /*Function to right rotate n by d bits*/
-LLI rightRotate(LLI n, LLI d)
-{
+LLI rightRotate(LLI n, LLI d) {
     /* In n>>d, first d bits are 0. To put last 3 bits of at
       first, do bitwise or of n>>d with n <<(INT_BITS - d) */
-    return (n >> d)|(n << (INT_BITS - d));
+    return (n >> d) | (n << (INT_BITS - d));
 }
 
 // The main function that returns value
 // of a given postfix expression
-LLI evaluatePostfix(Token* postfix, int postfixSize , Token* variables, int num_variables, int *error){
+LLI evaluatePostfix(Token *postfix, int postfixSize, Token *variables, int num_variables, int *error) {
     TokenStack stack;
     stack.top = -1;
     LLI val1 = 0;
@@ -166,7 +162,7 @@ LLI evaluatePostfix(Token* postfix, int postfixSize , Token* variables, int num_
 
     int i = 0;
     // Scan all characters one by one
-    for (i = 0; i < postfixSize; ++i){
+    for (i = 0; i < postfixSize; ++i) {
         if (postfix[i].name != NULL) {
             if (isOperator(postfix[i].name)) {
                 if (strcmp(postfix[i].name, "!") == 0) {
@@ -237,18 +233,15 @@ LLI evaluatePostfix(Token* postfix, int postfixSize , Token* variables, int num_
                     *error = 1;
                     return 0;
                 }
-            }
-            else if (postfix[i].type == TOKEN_TYPE_NUMBER){
+            } else if (postfix[i].type == TOKEN_TYPE_NUMBER) {
                 pushPostfix(&stack, postfix[i].value);
-            }
-            else if(postfix[i].type == TOKEN_TYPE_IDENTIFIER){
+            } else if (postfix[i].type == TOKEN_TYPE_IDENTIFIER) {
                 if (returnIndex(variables, num_variables, postfix[i].name) == -1) {
                     pushPostfix(&stack, postfix[i].value);
                 } else {
                     pushPostfix(&stack, variables[returnIndex(variables, num_variables, postfix[i].name)].value);
                 }
-            }
-            else{
+            } else {
                 printf("Error: Invalid token");
                 *error = 1;
                 return 0;

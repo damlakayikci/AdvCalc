@@ -94,6 +94,7 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
     while (i < input_length) {
         if (input[i] == '%') {
             tokens[i].name = "Comment_line";
+
             return tokens;
         }
         // if the current character is a digit, parse it as a number
