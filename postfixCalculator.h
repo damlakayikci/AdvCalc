@@ -176,8 +176,11 @@ LLI evaluatePostfix(Token *postfix, int postfixSize, Token *variables, int num_v
                     } else if (peek(&stack).type == TOKEN_TYPE_NUMBER) {
                         val1 = popPostfix(&stack).value;
                         pushPostfix(&stack, ~val1);
-                    } else
-                        printf("Error: Invalid operand for ! operator");
+                    } else {
+                        printf("Error: Invalid operand for ! operator\n");
+                        *error = 1;
+                        return 0;
+                    }
                 } else if (peek(&stack).type == TOKEN_TYPE_IDENTIFIER || peek(&stack).type == TOKEN_TYPE_NUMBER) {
                     if (returnIndex(variables, num_variables, peek(&stack).name) == -1) {
                         val1 = popPostfix(&stack).value;
@@ -224,12 +227,12 @@ LLI evaluatePostfix(Token *postfix, int postfixSize, Token *variables, int num_v
                         }
                         printf("%lld %lld %lld %s \n", val2, val1, peek(&stack).value, postfix[i].name);
                     } else {
-                        printf("Error: Invalid operand for %s operator", postfix[i].name);
+                        printf("Error: Invalid operand for %s operator\n", postfix[i].name);
                         *error = 1;
                         return 0;
                     }
                 } else {
-                    printf("Error: Invalid operand for %s operator", postfix[i].name);
+                    printf("Error: Invalid operand for %s operator\n", postfix[i].name);
                     *error = 1;
                     return 0;
                 }
@@ -242,7 +245,7 @@ LLI evaluatePostfix(Token *postfix, int postfixSize, Token *variables, int num_v
                     pushPostfix(&stack, variables[returnIndex(variables, num_variables, postfix[i].name)].value);
                 }
             } else {
-                printf("Error: Invalid token");
+                printf("Error: Invalid token\n");
                 *error = 1;
                 return 0;
             }
