@@ -21,6 +21,7 @@ int main() {
         int num_tokens = 0; //  keep track of the number of tokens
         int index = 0;     //  keep track of the index of the tokens
         int output_count = 0;
+        int error = 0; // boolean for errors
         printf("Enter input string: ");
         fgets(input, 256, stdin);
         //  if the input is blank
@@ -83,7 +84,7 @@ int main() {
                     variables[returnIndex(variables, num_variables, variable[0].name)].value = evaluatePostfix(
                             infixToPostfix(
                                     formatController(tokenequals, variableindex, 0, &index, &output_count),
-                                    variableindex), variableindex, variables, num_variables);
+                                    variableindex, &error), variableindex, variables, num_variables, &error);
                     continue;
                 }
                 // CONTROLLER
@@ -108,7 +109,7 @@ int main() {
                     if (output == NULL) {
                         printf("Error!\n");
                     } else {
-                        Token *postfix = infixToPostfix(output, num_tokens);
+                        Token *postfix = infixToPostfix(output, num_tokens, &error);
                         
                         // if infixToPostfix returns null, there is an error
                         if (postfix == NULL) {
@@ -122,7 +123,7 @@ int main() {
                             //                    }
                             // END OF CONTROLLER
 
-                            printf("Result: %lld\n", evaluatePostfix(postfix, num_tokens, variables, num_variables));
+                            printf("Result: %lld\n", evaluatePostfix(postfix, num_tokens, variables, num_variables, &error));
                         }
                     }
                 }
