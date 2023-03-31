@@ -61,7 +61,7 @@ Token *changeParenthesis(Token *tokens, int input_length) {
         index++;
     }
     if (p != 0) {
-        printf("Error: Parenthesis mismatch\n");
+        //printf("Error: Parenthesis mismatch\n");
         return NULL;
     }
     return tokens;
@@ -210,7 +210,7 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
         } else if (isspace(input[i])) {
             i++;
         } else {
-            printf("Error: Invalid character%c\n", input[i]);
+            //printf("Error: Invalid character%c\n", input[i]);
             return NULL;
         }
     }
