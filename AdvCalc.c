@@ -127,13 +127,13 @@ int main() {
                                     // END CONTROLLER
                                 }
                             }
-                            free(postfix);
-                            if (postfix != NULL)
-                                for (int i = 0; i < num_tokens; ++i) {
-                                    postfix[i].name = NULL;
-                                    postfix[i].type = 0;
-                                    postfix[i].value = 0;
-                                }
+                            //free(postfix);
+                            int i = 0;
+                            while(postfix[i].name != NULL) {
+                                postfix[i].name = NULL;
+                                postfix[i].value = 0;
+                                postfix[i].type = 0;
+                            }
                         }
                             // if there is no equal sign in the input
                         else {
@@ -165,31 +165,35 @@ int main() {
                                     printf("Result: %lld\n", result);
                                 }
                             }
-                            free(postfix);
-                            if (postfix != NULL)
-                                for (int i = 0; i < num_tokens; ++i) {
-                                    postfix[i].name = NULL;
-                                    postfix[i].type = 0;
-                                    postfix[i].value = 0;
-                                }
+                            //free(postfix);
+                            int i = 0;
+                            while (postfix[i].type != 0) {
+                                postfix[i].name = NULL;
+                                postfix[i].type = 0;
+                                postfix[i].value = 0;
+                                ++i;
+                            }
                         }
                     }
-                    free(formatted);
-                    if (formatted != NULL)
-                        for (int i = 0; i < num_tokens; ++i) {
-                            formatted[i].name = NULL;
-                            formatted[i].type = 0;
-                            formatted[i].value = 0;
-                        }
+                    // free(formatted);
+                    int i = 0;
+                    while (formatted[index].type != 0) {
+                        formatted[i].name = NULL;
+                        formatted[i].type = 0;
+                        formatted[i].value = 0;
+                        ++i;
+                    }
                 }
             }
-            free(tokens);
-            if (tokens != NULL)
-                for (int i = 0; i < num_tokens; ++i) {
-                    tokens[i].name = NULL;
-                    tokens[i].type = 0;
-                    tokens[i].value = 0;
-                }
+            //free(tokens);
+            int i = 0;
+            while (tokens[i].type != 0) {
+                tokens[i].name = NULL;
+                tokens[i].type = 0;
+                tokens[i].value = 0;
+
+
+            }
         }
     }
     return 0;
