@@ -17,7 +17,6 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
     int nonRecIndex;
     // if there is an equal sign it should be in the second position and there should be an identifier before it
     if ((input[1].type == TOKEN_TYPE_EQUALS) && ((input[0].type != TOKEN_TYPE_IDENTIFIER) || (inputSize <= 2))) {
-       // printf("Error: Equal sign\n");
         return NULL;
     }
     if (!recursive) { // Initial check for errors
@@ -26,41 +25,33 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
             if ((input[d].type == TOKEN_TYPE_IDENTIFIER ||input[d].type == TOKEN_TYPE_NUMBER) &&
                 (input[d + 1].type == TOKEN_TYPE_IDENTIFIER || input[d + 1].type == TOKEN_TYPE_NUMBER ||
                  strcmp(input[d + 1].name, "(") == 0)) {
-                //printf("Error: Repeated identifier\n");
                 return NULL;
             }
             if (shouldntRepeat(input[d].name) && shouldntRepeat(input[d + 1].name)) {
-               // printf("Error: Repeated symbol\n");
                 return NULL;
             }
             // empty parenthesis
             if (strcmp(input[d].name, "(") == 0 && strcmp(input[d + 1].name, ")") == 0) {
-                //printf("Error: Empty parenthesis\n");
                 return NULL;
             }
             if (input[d].type == TOKEN_TYPE_EQUALS && d != 1) { // if equal sign is not in the second index
-              //  printf("Equal sign is in wrong index \n");
                 return NULL;
             }
         }
     }
     int parenthesisCount = 0;       //count the parenthesis
     while ((*index) < inputSize) {       //for each token
-
         if (isFunctionOperator(input[(*index)].name)) {     //if it is a function operator
             // if the end of the input is reached return NULL
             if ((*index) + 1 == inputSize) {
-               // printf("Error: Expected open parenthesis after function operator\n");
                 return NULL;
             }
-
             if (strcmp(input[(*index) + 1].name, "(") == 0) {   //if next is an open parenthesis
                 output[(*index) + 1].type = TOKEN_TYPE_OPENPARENTHESIS;   //add it to the output
                 output[(*index) + 1].name = "(";
                 (*output_count)++;    //increase the output count
                 parenthesisCount++;
-            } else {
-               // printf("Error: Expected open parenthesis after function operator\n");
+            } else {   //if next is not an open parenthesis return NULL
                 return NULL;
             }
 
@@ -75,7 +66,6 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
             int commaCount = 0;
             while (parenthesisCount != 0) {   //while the parenthesis are not closed
                 if ((*index) + j == inputSize) {    //if the end of the input is reached parenthesis are not closed !
-                 //   printf("Error: Parenthesis not closed\n");
                     return NULL;
                 }
 
@@ -102,7 +92,6 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
 
                     // if there is an error in the inner function return NULL
                     if (inner == NULL) {
-                      //  printf("Error: Inner function operator\n");
                         return NULL;
                     }
 
@@ -151,7 +140,6 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
 
             //if there is not 1 comma inside expression
             if (commaCount != 1) {
-            //    printf("Error: Non-expected number of commas\n");
                 return NULL;
             }
             (*index) += j;    //skip the tokens that are already processed
@@ -163,7 +151,6 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
 
             // if we have comma outside of operator, return NULL
         } else if (strcmp(input[(*index)].name, ",") == 0) {
-         //   printf("Error: Unexpected comma\n");
             return NULL;
         } else if (strcmp(input[(*index)].name, "(") == 0) {   //if it is an open parenthesis
             output[(*index)].type = TOKEN_TYPE_OPENPARENTHESIS;   //add it to the output
@@ -180,7 +167,6 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
             (*index)++;
             parenthesisCount--;
         }
-
             // else copy whatever we have to output array
         else {
             output[(*index)].type = input[(*index)].type;
@@ -191,7 +177,6 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
         }
     }
     if (parenthesisCount != 0) {
-       // printf("Error: Parenthesis not closed\n");
         return NULL;
     }
     return output;

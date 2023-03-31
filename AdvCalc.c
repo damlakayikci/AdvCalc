@@ -13,7 +13,6 @@
 
 int main() {
     int num_variables = 0;
-    // Token *tokens = malloc(sizeof(Token) * MAX_LENGTH);
     Token *variables = malloc(sizeof(Token) * MAX_VARIABLES);
     char input[256];
     int bok = 0;
@@ -37,7 +36,6 @@ int main() {
         }
 
         if (is_empty) {
-           // printf("Input is empty.\n");
             continue;
         } else {
 
@@ -51,15 +49,6 @@ int main() {
                 continue;
             } else {
 
-                // CONTROLLER
-//                for (int i = 0; i < num_tokens; ++i) {
-//                    printf("Tokenizer output\t %d: Name: %s\t\t Type: %u\t\t Value: %lld\n", i + 1, tokens[i].name,
-//                           tokens[i].type,
-//                           tokens[i].value);
-//                }
-//                printf("Num tokens: %d\n", num_tokens);
-                // END CONTROLLER
-
                 // if the first token is a comment, skip the rest
                 if (strcmp(tokens[0].name, "Comment_line") == 0) {
                    // printf("\n");
@@ -72,15 +61,6 @@ int main() {
                         printf("Error!\n");
                         continue;
                     } else {
-
-                        // CONTROLLER
-//                        for (int i = 0; i < index; ++i) {
-//                            printf("Formatted output\t %d: Name: %s\t\t Type: %u\t\t Value: %lld\n", i + 1,
-//                                   formatted[i].name,
-//                                   formatted[i].type,
-//                                   formatted[i].value);
-//                        } // END CONTROLLER
-
                         // If the expression is an equation
                         if (formatted[1].type == TOKEN_TYPE_EQUALS) {
 
@@ -91,15 +71,6 @@ int main() {
 
                             // the expression after the equal sign will be our value, so we take formatted form second element
                             Token *postfix = infixToPostfix(&formatted[2], num_tokens - 2, &error);
-
-                            // CONTROLLER
-//                            for (int i = 0; i < output_count - 2; ++i) {
-//                                printf("Postfix with = output\t %d: Name: %s\t\t Type: %u\t\t Value: %lld\n", i + 1,
-//                                       postfix[i].name,
-//                                       postfix[i].type,
-//                                       postfix[i].value);
-//                            }
-                            // END CONTROLLER
 
                             // if there is error in converting to postfix
                             if (error) {
@@ -117,20 +88,8 @@ int main() {
                                     int var_index = returnIndex(variables, num_variables, variable.name);
                                     variables[var_index].value = result;
 
-                                    // CONTROLLER
-                             //       printf("Value: %lld\n", result);
-                                    // END CONTROLLER
-                                    // CONTROLLER
-//                                    for (int i = 0; i < num_variables; ++i) {
-//                                        printf("Variables\t %d: Name: %s\t\t Type: %u\t\t Value: %lld\n", i + 1,
-//                                               variables[i].name,
-//                                               variables[i].type,
-//                                               variables[i].value);
-//                                    }
-                                    // END CONTROLLER
                                 }
                             }
-                            //free(postfix);
                             int i = 0;
                             if (postfix != NULL)
                             while (postfix[i].name != NULL) {
@@ -149,15 +108,6 @@ int main() {
                                 continue;
                             } else {
 
-                                // CONTROLLER
-//                                for (int i = 0; i < output_count; ++i) {
-//                                    printf("Postfix output\t %d: Name: %s\t\t Type: %u\t\t Value: %lld\n", i + 1,
-//                                           postfix[i].name,
-//                                           postfix[i].type,
-//                                           postfix[i].value);
-//                                }
-                                // END CONTROLLER
-
                                 long long int result = evaluatePostfix(postfix, num_tokens, variables, num_variables,
                                                                        &error);
 
@@ -169,7 +119,6 @@ int main() {
                                     printf("%lld\n", result);
                                 }
                             }
-                            //free(postfix);
                             int i = 0;
                             if (postfix != NULL)
                             while (postfix[i].type != 0) {
@@ -180,7 +129,6 @@ int main() {
                             }
                         }
                     }
-                    // free(formatted);
                     int i = 0;
                     if (formatted != NULL)
                     while (formatted[index].type != 0) {
@@ -191,15 +139,12 @@ int main() {
                     }
                 }
             }
-            //free(tokens);
             int i = 0;
             if (tokens != NULL)
                 while (tokens[i].type != 0) {
                     tokens[i].name = NULL;
                     tokens[i].type = 0;
                     tokens[i].value = 0;
-
-
                 }
         }
     }

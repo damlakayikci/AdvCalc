@@ -1,9 +1,3 @@
-// #include <stdio.h>
-// #include <string.h>
-// #include <ctype.h>
-// #include <stdlib.h>
-// #include "token.h"
-
 #define MAX_LENGTH 256
 
 
@@ -29,64 +23,13 @@ int returnIndex(Token *variables, int num_tokens, char *name) {
     return -1;
 }
 
-Token *changeParenthesis(Token *tokens, int input_length) {
-    int index = 0;
-    int p = 0; // parenthesis counter
-    // array to keep track of the parenthesis
-    int *parenthesis = malloc(sizeof(int) * input_length); // 0 for normal parenthesis, 1 for operator parenthesis
-    // int parenthesis[input_length] ;
-    // If it's a comment line, do nothing, return the tokens
-    if (strcmp(tokens[0].name, "Comment_line") == 0) {
-        return tokens;
-    }
-    while (index < input_length) {
-        if (tokens[index].type == TOKEN_TYPE_OPENPARENTHESIS) {
-            if (isOperatorSymbol(tokens[index - 1].name)) {
-                tokens[index].type = TOKEN_TYPE_OPENPARENTHESISOPERATOR;
-                tokens[index].name = "(";
-                tokens[index].value = 0;
-                parenthesis[++p] = 1;
-            } else {
-                parenthesis[++p] = 0;
-            }
-        } else if (tokens[index].type == TOKEN_TYPE_CLOSEPARENTHESIS) {
-            if (parenthesis[p] == 1) {
-                tokens[index].type = TOKEN_TYPE_CLOSEPARENTHESISOPERATOR;
-                tokens[index].name = ")";
-                tokens[index].value = 0;
-            }
-            parenthesis[p] = -1;
-            p--;
-        }
-        index++;
-    }
-    if (p != 0) {
-        //printf("Error: Parenthesis mismatch\n");
-        return NULL;
-    }
-    return tokens;
-}
-
-//  xor  ( ( (a+b) + xor( (v+y), c  )  ), xor( (x+t) , ( u+ not( c)  )  )  )
-//       1 2 3  -3      3 4  -4    -3 -2     2 3  -3   3       4 -4 -3 -2 -1
-
-//         1 2  -2        2  -2       -1       1  -1   1            -1        
-//  xor  [ ( (a+b) + xor[ (b+y), c  ]  ), xor[ (a+b) , ( a+ not[ c]  )  ]  ]
-//       1              2          -2        2                 3 -3    -2 -1
-
 Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variables) {
     // keep track of the number of local tokens
     int num_local_tokens = 0;
     // get the length of the input string
     int input_length = strlen(input);
-//    if (input[0] == '%') {
-//        Token *tokens = malloc(sizeof(Token));
-//        tokens[0].name = "Comment_line";
-//        return tokens;
-//    }
 
     // allocate memory for the array of tokens
-    // tokens = NULL;
     Token *tokens = malloc(sizeof(Token) * input_length);
 
     // iterate through the input string, one character at a time
@@ -142,7 +85,6 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
                 if (strcmp(name, "xor") == 0) {
                     tokens[num_local_tokens].type = TOKEN_TYPE_XOR;
                     tokens[num_local_tokens].name = "^";
-
                 } else if (strcmp(name, "ls") == 0) {
                     tokens[num_local_tokens].type = TOKEN_TYPE_LS;
                     tokens[num_local_tokens].name = "<";
@@ -214,7 +156,6 @@ Token *tokenizer(char *input, int *num_tokens, Token *variables, int *num_variab
             return NULL;
         }
     }
-    //tokens = changeParenthesis(tokens, input_length);
     if (tokens == NULL) {
         return NULL;
     }
