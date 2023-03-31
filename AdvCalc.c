@@ -16,8 +16,8 @@ int main() {
     // Token *tokens = malloc(sizeof(Token) * MAX_LENGTH);
     Token *variables = malloc(sizeof(Token) * MAX_VARIABLES);
     char input[256];
-int bok = 0;
-    while (bok <1) {
+    int bok = 0;
+    while (bok < 1) {
         int num_tokens = 0; //  keep track of the number of tokens
         int index = 0;     //  keep track of the index of the tokens
         int output_count = 0;
@@ -128,13 +128,14 @@ int bok = 0;
                                 }
                             }
                             free(postfix);
-                            for (int i = 0; i < num_tokens; ++i) {
-                                postfix[i].name = NULL;
-                                postfix[i].type = 0;
-                                postfix[i].value = 0;
-                            }
+                            if (postfix != NULL)
+                                for (int i = 0; i < num_tokens; ++i) {
+                                    postfix[i].name = NULL;
+                                    postfix[i].type = 0;
+                                    postfix[i].value = 0;
+                                }
                         }
-                        // if there is no equal sign in the input
+                            // if there is no equal sign in the input
                         else {
                             Token *postfix = infixToPostfix(formatted, num_tokens, &error);
 
@@ -153,7 +154,8 @@ int bok = 0;
                                 }
                                 // END CONTROLLER
 
-                                long long int result = evaluatePostfix(postfix, num_tokens, variables,num_variables, &error);
+                                long long int result = evaluatePostfix(postfix, num_tokens, variables, num_variables,
+                                                                       &error);
 
                                 // if there is an error in evaluating the postfix
                                 if (error) {
@@ -164,35 +166,31 @@ int bok = 0;
                                 }
                             }
                             free(postfix);
-                            for (int i = 0; i < num_tokens; ++i) {
-                                postfix[i].name = NULL;
-                                postfix[i].type = 0;
-                                postfix[i].value = 0;
-                            }
+                            if (postfix != NULL)
+                                for (int i = 0; i < num_tokens; ++i) {
+                                    postfix[i].name = NULL;
+                                    postfix[i].type = 0;
+                                    postfix[i].value = 0;
+                                }
                         }
                     }
                     free(formatted);
-                    for (int i = 0; i < num_tokens; ++i) {
-                        formatted[i].name = NULL;
-                        formatted[i].type = 0;
-                        formatted[i].value = 0;
-                    }
-
+                    if (formatted != NULL)
+                        for (int i = 0; i < num_tokens; ++i) {
+                            formatted[i].name = NULL;
+                            formatted[i].type = 0;
+                            formatted[i].value = 0;
+                        }
                 }
-
-
             }
             free(tokens);
-            // CONTROLLER
-            for (int i = 0; i < num_tokens; ++i) {
-                tokens[i].name = NULL;
-                tokens[i].type = 0;
-                tokens[i].value = 0;
-            }
-            // END CONTROLLER
+            if (tokens != NULL)
+                for (int i = 0; i < num_tokens; ++i) {
+                    tokens[i].name = NULL;
+                    tokens[i].type = 0;
+                    tokens[i].value = 0;
+                }
         }
-
-
     }
     return 0;
 }
