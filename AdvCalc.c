@@ -46,6 +46,8 @@ int main() {
             // if function returns null, there is an error
             if (tokens == NULL) {
                 printf("Error!\n");
+            } else if (num_tokens == 0) {
+                continue;
             } else {
 
                 // CONTROLLER
@@ -129,7 +131,8 @@ int main() {
                             }
                             //free(postfix);
                             int i = 0;
-                            while(postfix[i].name != NULL) {
+                            if (postfix != NULL)
+                            while (postfix[i].name != NULL) {
                                 postfix[i].name = NULL;
                                 postfix[i].value = 0;
                                 postfix[i].type = 0;
@@ -167,6 +170,7 @@ int main() {
                             }
                             //free(postfix);
                             int i = 0;
+                            if (postfix != NULL)
                             while (postfix[i].type != 0) {
                                 postfix[i].name = NULL;
                                 postfix[i].type = 0;
@@ -177,6 +181,7 @@ int main() {
                     }
                     // free(formatted);
                     int i = 0;
+                    if (formatted != NULL)
                     while (formatted[index].type != 0) {
                         formatted[i].name = NULL;
                         formatted[i].type = 0;
@@ -187,13 +192,14 @@ int main() {
             }
             //free(tokens);
             int i = 0;
-            while (tokens[i].type != 0) {
-                tokens[i].name = NULL;
-                tokens[i].type = 0;
-                tokens[i].value = 0;
+            if (tokens != NULL)
+                while (tokens[i].type != 0) {
+                    tokens[i].name = NULL;
+                    tokens[i].type = 0;
+                    tokens[i].value = 0;
 
 
-            }
+                }
         }
     }
     return 0;
