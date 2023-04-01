@@ -42,6 +42,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
     int parenthesisCount = 0;       //count the parenthesis
     while ((*index) < inputSize) {       //for each token
         if (isFunctionOperator(input[(*index)].name)) {     //if it is a function operator
+            int innerParenthesisCount = 0;
             // if the end of the input is reached return NULL
             if ((*index) + 1 == inputSize) {
                 return NULL;
@@ -51,6 +52,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
                 output[(*index) + 1].name = "(";
                 (*output_count)++;    //increase the output count
                 parenthesisCount++;
+                innerParenthesisCount++;
             } else {   //if next is not an open parenthesis return NULL
                 return NULL;
             }
@@ -75,6 +77,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
                     output[(*index) + j].name = "(";
                     (*output_count)++;    //increase the output count
                     parenthesisCount++;
+                    innerParenthesisCount++;
                     j++;
                 }
                     // decrease the parenthesis count if a close parenthesis is found
@@ -83,6 +86,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
                     output[(*index) + j].name = ")";
                     (*output_count)++;   //increase the output count
                     parenthesisCount--;
+                    innerParenthesisCount--;
                     j++;
                 }
                     // if another function operator is found, we go into recursion
@@ -108,7 +112,7 @@ Token *formatController(Token *input, int inputSize, int recursive, int *index, 
 
                     //if we have a comma replace it with the operator
                 } else if (strcmp(input[(*index) + j].name, ",") == 0) {
-                    if (parenthesisCount != 1) { // if the comma is not in the first level of parenthesis
+                    if (innerParenthesisCount != 1) { // if the comma is not in the first level of parenthesis
                         return NULL;
                     }
                     if (recursive) {
