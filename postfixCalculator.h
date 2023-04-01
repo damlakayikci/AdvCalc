@@ -9,6 +9,7 @@ typedef struct {
     int top;
 } TokenStack;
 
+// regular stack methods
 void push(TokenStack *stack, Token item) {
     stack->top++;
     stack->items[stack->top].name = item.name;
@@ -27,6 +28,7 @@ Token peek(TokenStack *stack) {
     return stack->items[stack->top];
 }
 
+// Function to return precedence of operators
 int precedence(char *operator) {
     if (strcmp(operator, "|") == 0)
         return 1;
@@ -55,6 +57,7 @@ int isOperator(char *ch) {
 }
 
 
+// function that converts infix expression to postfix expression
 Token *infixToPostfix(Token *infix, int infixSize, int *error) {
     int i, j;
     Token *postfix = malloc(sizeof(Token) * (infixSize + 1));
@@ -88,7 +91,6 @@ Token *infixToPostfix(Token *infix, int infixSize, int *error) {
                     pop(&stack, &postfix[j++]);
                 }
                 if (stack.top > -1 && strcmp(peek(&stack).name, "(") != 0) {
-                    //printf("Invalid Expression");
                     *error = 1;
                     return 0;
                 } else
@@ -102,8 +104,6 @@ Token *infixToPostfix(Token *infix, int infixSize, int *error) {
                     pop(&stack, &postfix[j++]);
                 }
                 push(&stack, infix[i]);
-                //stack[++top]->name = infix[i].name;
-                //stack[top]->type = infix[i].type;
             }
         }
     }
@@ -111,13 +111,11 @@ Token *infixToPostfix(Token *infix, int infixSize, int *error) {
     // Pop all remaining elements from the stack
     while (stack.top > -1) {
         if (strcmp(peek(&stack).name, "(") == 0) {
-           // printf("Invalid Expression");
             *error = 1;
             return 0;
         }
         pop(&stack, &postfix[j++]);
     }
-    //postfix[j].name = '\0';
     return postfix;
 }
 
@@ -125,6 +123,7 @@ int isEmpty(TokenStack *stack) {
     return stack->top == -1;
 }
 
+// Regular stack methods for evaluatePostfix function
 Token popPostfix(TokenStack *stack) {
     if (!isEmpty(stack))
         return stack->items[stack->top--];
@@ -165,11 +164,12 @@ LLI evaluatePostfix(Token *postfix, int postfixSize, Token *variables, int num_v
     for (i = 0; i < postfixSize; ++i) {
         if (postfix[i].name != NULL) {
             if (isOperator(postfix[i].name)) {
+                // check not operator first
                 if (strcmp(postfix[i].name, "!") == 0) {
                     if (peek(&stack).type == TOKEN_TYPE_IDENTIFIER) {
                         if (returnIndex(variables, num_variables, peek(&stack).name) == -1) {
                             val1 = popPostfix(&stack).value;
-                        } else {
+                        } else { // if variable is found in the variable list get the value from the variable list
                             val1 = variables[returnIndex(variables, num_variables, popPostfix(&stack).name)].value;
                         }
                         pushPostfix(&stack, ~val1);
@@ -192,6 +192,7 @@ LLI evaluatePostfix(Token *postfix, int postfixSize, Token *variables, int num_v
                         } else {
                             val2 = variables[returnIndex(variables, num_variables, popPostfix(&stack).name)].value;
                         }
+                        // evaluate the expression
                         switch (postfix[i].name[0]) {
                             case '+':
                                 pushPostfix(&stack, val2 + val1);
@@ -224,11 +225,11 @@ LLI evaluatePostfix(Token *postfix, int postfixSize, Token *variables, int num_v
                                 pushPostfix(&stack, val2 | val1);
                                 break;
                         }
-                    } else {
+                    } else { // else something went wrong
                         *error = 1;
                         return 0;
                     }
-                } else {
+                } else { // else something went wrong
                     *error = 1;
                     return 0;
                 }
@@ -240,7 +241,7 @@ LLI evaluatePostfix(Token *postfix, int postfixSize, Token *variables, int num_v
                 } else {
                     pushPostfix(&stack, variables[returnIndex(variables, num_variables, postfix[i].name)].value);
                 }
-            } else {
+            } else { // else something went wrong
                 *error = 1;
                 return 0;
             }
