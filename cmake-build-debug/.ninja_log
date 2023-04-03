@@ -1,3 +1,10 @@
 # ninja log v5
+<<<<<<< Updated upstream
 0	83	1679405210267508260	CMakeFiles/p1.dir/main.c.o	ae1157323e3f7a62
 1	83	1679405210267280190	CMakeFiles/p1.dir/parse.c.o	f1eb26c849f92875
+=======
+175	246	1680301369149150565	p1	58d371bce223f626
+0	175	1680301369076281713	CMakeFiles/p1.dir/AdvCalc.c.o	aa615743ed748488
+0	61	1680471897949956068	build.ninja	dc370ca7e1bc769d
+0	153	1680176209139904412	CMakeFiles/p1.dir/main.c.o	8ea834c7d36b1b17
+>>>>>>> Stashed changes
