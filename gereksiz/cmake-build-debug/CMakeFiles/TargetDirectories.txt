@@ -1,3 +1,0 @@
-/Users/damlakayikci/Desktop/CmpE/okul/CmpE230/2020400060_2020400228/cmake-build-debug/CMakeFiles/p1.dir
-/Users/damlakayikci/Desktop/CmpE/okul/CmpE230/2020400060_2020400228/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/damlakayikci/Desktop/CmpE/okul/CmpE230/2020400060_2020400228/cmake-build-debug/CMakeFiles/rebuild_cache.dir
